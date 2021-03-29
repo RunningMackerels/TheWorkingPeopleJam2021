@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CompositeCollider2D))]
 public class Tetrimo : MonoBehaviour
 {
     private enum State
@@ -14,13 +11,13 @@ public class Tetrimo : MonoBehaviour
     [SerializeField]
     private TetrimoConfig _Config = null;
 
-    private CompositeCollider2D _Collider = null;
+    private BoxCollider2D[] _colliders = null;
 
     private State _State = State.Moving;
 
     private void Awake()
     {
-        _Collider = GetComponent<CompositeCollider2D>();
+        _colliders = GetComponentsInChildren<BoxCollider2D>();
     }
 
     private void Update()
@@ -30,12 +27,21 @@ public class Tetrimo : MonoBehaviour
             return;
         }
 
-        RaycastHit2D[] results = new RaycastHit2D[1];
+        bool hit = false;
         float distance = Time.deltaTime * _Config.VerticalSpeed;
 
-        int collisionsCount = _Collider.Cast(GameState.Instance.Direction, results, distance);
+        foreach (Collider2D col in _colliders)
+        {
+            RaycastHit2D[] results = new RaycastHit2D[1];
+            
+            int collisionsCount = col.Cast(GameState.Instance.Direction, results, distance);
 
-        if (collisionsCount == 0)
+            Debug.DrawRay(col.transform.position, GameState.Instance.Direction, Color.blue);
+
+            hit |= collisionsCount > 0;
+        }
+
+        if (!hit)
         {
             transform.Translate(GameState.Instance.Direction * distance);
         }
