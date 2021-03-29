@@ -6,7 +6,7 @@ public class GameState : MonoBehaviour
 {
     private static GameState _Instance;
 
-    private Vector2 _Direction = new Vector2(0f, -1f);
+    private Vector2 _Direction = Vector2.down;
 
     public static GameState Instance => _Instance;
 
