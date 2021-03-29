@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 141795210561225187}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalPosition: {x: 0.5, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4549301270251924064}
@@ -135,7 +135,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4377508789632700233}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5, z: 0}
+  m_LocalPosition: {x: 0.5, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4549301270251924064}
@@ -244,7 +244,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5236235721792758351}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1, y: -0.5, z: 0}
+  m_LocalPosition: {x: -0.5, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4549301270251924064}
@@ -338,6 +338,7 @@ GameObject:
   - component: {fileID: 4549301270251924064}
   - component: {fileID: 4176323486179042300}
   - component: {fileID: 3281220400778348158}
+  - component: {fileID: 8785121181616913710}
   m_Layer: 0
   m_Name: J
   m_TagString: Untagged
@@ -373,7 +374,7 @@ Rigidbody2D:
   m_GameObject: {fileID: 8330496676832946407}
   m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
+  m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
@@ -404,54 +405,67 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 1373172807691441126}
     m_ColliderPaths:
-    - - X: 4999707
+    - - X: 9999707
         Y: 10000000
-      - X: 4999707
+      - X: 9999707
         Y: 20000000
-      - X: -5000000
+      - X: 0
         Y: 19999707
-      - X: -4999707
+      - X: 293
         Y: 10000000
   - m_Collider: {fileID: 2827119219126670527}
     m_ColliderPaths:
-    - - X: 4999707
+    - - X: 9999707
         Y: 0
-      - X: 4999707
+      - X: 9999707
         Y: 10000000
-      - X: -5000000
+      - X: 0
         Y: 9999707
-      - X: -4999707
+      - X: 293
         Y: 0
   - m_Collider: {fileID: 2090746305927021899}
     m_ColliderPaths:
-    - - X: 4999707
+    - - X: 9999707
         Y: -10000000
-      - X: 4999707
+      - X: 9999707
         Y: 0
-      - X: -5000000
+      - X: 0
         Y: -293
-      - X: -4999707
+      - X: 293
         Y: -10000000
   - m_Collider: {fileID: 6372977023741605643}
     m_ColliderPaths:
-    - - X: -5000293
+    - - X: -293
         Y: -10000000
-      - X: -5000293
+      - X: -293
         Y: 0
-      - X: -15000000
+      - X: -10000000
         Y: -293
-      - X: -14999707
+      - X: -9999707
         Y: -10000000
   m_CompositePaths:
     m_Paths:
-    - - {x: -1.4999707, y: -0.99997073}
-      - {x: 0.4999707, y: -0.99997073}
-      - {x: 0.4999414, y: 2}
-      - {x: -0.5, y: 1.9999415}
-      - {x: -0.5000001, y: 0}
-      - {x: -1.5, y: -0.000058600002}
+    - - {x: -0.99997073, y: -0.99997073}
+      - {x: 0.99997073, y: -0.99997073}
+      - {x: 0.9999414, y: 2}
+      - {x: 0, y: 1.9999415}
+      - {x: -0.0000001, y: 0}
+      - {x: -1, y: -0.000058600002}
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0.00005
+--- !u!114 &8785121181616913710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8330496676832946407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dc559c0699fc3044a0312fa8665d1a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _Config: {fileID: 11400000, guid: b3969a537444b674a9d14db06a8a87a8, type: 2}
 --- !u!1 &9054240829674200216
 GameObject:
   m_ObjectHideFlags: 0
@@ -478,7 +492,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9054240829674200216}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0.5, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4549301270251924064}
