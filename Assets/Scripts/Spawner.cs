@@ -16,4 +16,14 @@ public class Spawner : MonoBehaviour
 
         _InstancedTetrimos.Add(Instantiate(_TetrimosPrefabs[pieceIdx], transform, false));
     }
+
+    private void Update()
+    {
+#if UNITY_EDITOR
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            SpawnPiece();
+        }
+#endif
+    }
 }
