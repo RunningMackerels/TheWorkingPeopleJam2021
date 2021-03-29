@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: 183508a3289814f049cc565a0c10552b
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - SF Zero Gravity
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: f38cd77d0271445d5ba7bfab8c4a225b, type: 3}
+  - {fileID: 12800000, guid: 1534af6a13bb441f5bc5df15cfae8fe7, type: 3}
+  - {fileID: 12800000, guid: 50d2bc19e568e44e39819f32c5f3cd6e, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
