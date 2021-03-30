@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Tetrimo : MonoBehaviour
@@ -11,14 +13,21 @@ public class Tetrimo : MonoBehaviour
     [SerializeField]
     private TetrimoConfig _Config = null;
 
-    private BoxCollider2D[] _colliders = null;
+    [SerializeField]
+    private Transform[] _parts;
 
     private State _State = State.Moving;
 
-    private void Awake()
+    float _distanceToColision = float.MaxValue;
+
+    public PlayArea PlayArea { get; set; }
+
+    private void Start()
     {
-        _colliders = GetComponentsInChildren<BoxCollider2D>();
+        CalculateEndPosition();
     }
+
+
 
     private void Update()
     {
@@ -27,28 +36,36 @@ public class Tetrimo : MonoBehaviour
             return;
         }
 
-        bool hit = false;
         float distance = Time.deltaTime * _Config.VerticalSpeed;
 
-        foreach (Collider2D col in _colliders)
+        if (distance > _distanceToColision)
         {
-            RaycastHit2D[] results = new RaycastHit2D[1];
-            
-            int collisionsCount = col.Cast(GameState.Instance.Direction, results, distance);
+            distance = _distanceToColision;
+            _distanceToColision = 0;
 
-            Debug.DrawRay(col.transform.position, GameState.Instance.Direction, Color.blue);
-
-            hit |= collisionsCount > 0;
-        }
-
-        if (!hit)
-        {
-            transform.Translate(GameState.Instance.Direction * distance);
+            _State = State.Stopped;
+            PlayArea.MarkStaticPieces(_parts);
         }
         else
         {
-            _State = State.Stopped;
-            //align to grid
+            _distanceToColision -= distance;
+        }
+
+        transform.Translate(GameState.Instance.Direction * distance);
+    }
+
+    private void CalculateEndPosition()
+    {
+        _distanceToColision = float.MaxValue;
+
+        foreach(Transform part in _parts)
+        {
+            float distance = PlayArea.GetDistanceToCollision(part.position, GameState.Instance.DirectionGrid);
+
+            if (distance < _distanceToColision)
+            {
+                _distanceToColision = distance;
+            }
         }
     }
 }

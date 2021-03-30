@@ -6,11 +6,18 @@ public class GameState : MonoBehaviour
 {
     private static GameState _Instance;
 
-    private Vector2 _Direction = Vector2.down;
+    private Vector2Int _Direction = Vector2Int.down;
 
     public static GameState Instance => _Instance;
 
-    public Vector2 Direction => _Direction;
+    public Vector2Int DirectionGrid => _Direction;
+    public Vector2 Direction
+    {
+        get
+        {
+            return new Vector2(_Direction.x, _Direction.y);
+        }
+    }
 
     private void Awake()
     {
