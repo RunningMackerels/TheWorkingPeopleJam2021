@@ -69,12 +69,13 @@ public class PlayArea : MonoBehaviour
         Vector2 directionFilter = new Vector2(Mathf.Abs(direction.x), Mathf.Abs(direction.y));
 
         Vector2Int originGrid = PositionToGrid(origin);
+        Vector2 originGridCenter = GridCenter(originGrid);
 
         int gridDistance = DistanceToNextOccupiedGrid(originGrid, direction);
 
-        float distanceToGridCenter = ((origin - _BottomLeftCorner - Vector2.one * cellSize * 0.5f - new Vector2(originGrid.x * cellSize, originGrid.y * cellSize)) * directionFilter).magnitude;
+        float distanceToGridCenter = ((origin - originGridCenter) * directionFilter).magnitude;
 
-        return distanceToGridCenter + gridDistance * cellSize;
+        return gridDistance * cellSize + distanceToGridCenter;
     }
 
     private int DistanceToNextOccupiedGrid(Vector2Int gridOriginIdx, Vector2Int directionNormalized)
@@ -98,6 +99,11 @@ public class PlayArea : MonoBehaviour
         Vector2 relativePosition = position - _BottomLeftCorner;
 
         return new Vector2Int((int)relativePosition.x / (int)cellSize, (int)relativePosition.y / (int)cellSize);
+    }
+
+    public Vector2 GridCenter(Vector2Int gridPosition)
+    {
+        return _BottomLeftCorner + new Vector2(gridPosition.x, gridPosition.y) * cellSize;
     }
 
     public void MarkStaticPieces(Transform[] positions)
