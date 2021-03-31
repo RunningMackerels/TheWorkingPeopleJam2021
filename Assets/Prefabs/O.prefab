@@ -293,8 +293,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dc559c0699fc3044a0312fa8665d1a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Config: {fileID: 11400000, guid: b3969a537444b674a9d14db06a8a87a8, type: 2}
-  _parts:
+  config: {fileID: 11400000, guid: b3969a537444b674a9d14db06a8a87a8, type: 2}
+  parts:
   - {fileID: 6506391628327635718}
   - {fileID: 1026455984921786234}
   - {fileID: 1316510875190650705}

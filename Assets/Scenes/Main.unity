@@ -235,9 +235,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dae8c714cb71a4447b6ebd07bf22ff66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Width: 15
-  _Height: 22
-  _CellSize: 1
+  width: 15
+  height: 22
+  cellSize: 1
 --- !u!4 &655511224
 Transform:
   m_ObjectHideFlags: 0
@@ -282,7 +282,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playArea: {fileID: 655511223}
-  _TetrimosPrefabs:
+  tetrimosPrefabs:
   - {fileID: 9156854106275040462, guid: b40e9d69649ee483eae8fc0382f4d66a, type: 3}
   - {fileID: 8785121181616913710, guid: a7a01373ccd7f44f3926f9691489720a, type: 3}
   - {fileID: -4973885517335607299, guid: cc8286ff9e74f4d66bf22ecf8698ffa8, type: 3}

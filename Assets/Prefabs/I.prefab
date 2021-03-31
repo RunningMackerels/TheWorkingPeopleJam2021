@@ -129,8 +129,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dc559c0699fc3044a0312fa8665d1a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Config: {fileID: 11400000, guid: b3969a537444b674a9d14db06a8a87a8, type: 2}
-  _parts:
+  config: {fileID: 11400000, guid: b3969a537444b674a9d14db06a8a87a8, type: 2}
+  parts:
   - {fileID: 1121849062046261073}
   - {fileID: 6621548426557530925}
   - {fileID: 5161104127366361862}

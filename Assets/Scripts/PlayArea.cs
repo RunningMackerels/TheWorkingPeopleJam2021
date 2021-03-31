@@ -8,13 +8,13 @@ public class PlayArea : MonoBehaviour
     private const int BORDER = 3;
 
     [SerializeField, Range(0f, 50f)]
-    private int _Width = 20;
+    private int width = 20;
 
-    [SerializeField, Range(0f, 50f)]
-    private int _Height = 50;
+    [SerializeField, Range(0f, 50f)]    
+    private int height = 50;
 
     [SerializeField]
-    private float _CellSize = 1f;
+    private float cellSize = 1f;
 
     /// <summary>
     /// 0 - empty
@@ -24,10 +24,10 @@ public class PlayArea : MonoBehaviour
     /// </summary>
     private int[,] _grid = null;
 
-    private Vector2 _BottomLeftCorner => transform.position - new Vector3(_CellSize * _Width * 0.5f, _CellSize * _Height * 0.5f, 0f);
-    private Vector2 _TopRightCorner => transform.position + new Vector3(_CellSize * _Width * 0.5f, _CellSize * _Height * 0.5f, 0f);
+    private Vector2 _BottomLeftCorner => transform.position - new Vector3(cellSize * width * 0.5f, cellSize * height * 0.5f, 0f);
+    private Vector2 _TopRightCorner => transform.position + new Vector3(cellSize * width * 0.5f, cellSize * height * 0.5f, 0f);
 
-    private Rect _Extentents => new Rect(_BottomLeftCorner, new Vector2(_Width * _CellSize, _Height * _CellSize));
+    private Rect _Extentents => new Rect(_BottomLeftCorner, new Vector2(width * cellSize, height * cellSize));
 
 
     private void Awake()
@@ -42,23 +42,23 @@ public class PlayArea : MonoBehaviour
 
     private void InitializeGrid()
     {
-        _grid = new int[_Width, _Height];
-        for (int x = 0; x < _Width; x++)
+        _grid = new int[width, height];
+        for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < _Height; y++)
+            for (int y = 0; y < height; y++)
             {
                 _grid[x, y] = EMPTY;
             }
         }
-        for (int x = 0; x < _Width; x++)
+        for (int x = 0; x < width; x++)
         {
             _grid[x, 0] = 3;
-            _grid[x, _Height - 1] = BORDER;
+            _grid[x, height - 1] = BORDER;
         }
-        for (int y = 0; y < _Height; y++)
+        for (int y = 0; y < height; y++)
         {
             _grid[0, y] = 3;
-            _grid[_Width - 1, y] = BORDER;
+            _grid[width - 1, y] = BORDER;
         }
     }
 
@@ -68,9 +68,9 @@ public class PlayArea : MonoBehaviour
 
         int gridDistance = DistanceToNextOccupiedGrid(originGrid, direction);
 
-        float distanceToGridCenter = (origin - _BottomLeftCorner - Vector2.one * _CellSize * 0.5f - new Vector2(originGrid.x * _CellSize, originGrid.y * _CellSize)).magnitude;
+        float distanceToGridCenter = (origin - _BottomLeftCorner - Vector2.one * cellSize * 0.5f - new Vector2(originGrid.x * cellSize, originGrid.y * cellSize)).magnitude;
 
-        return distanceToGridCenter + gridDistance * _CellSize;
+        return distanceToGridCenter + gridDistance * cellSize;
     }
 
     private int DistanceToNextOccupiedGrid(Vector2Int gridOriginIdx, Vector2Int directionNormalized)
@@ -86,14 +86,14 @@ public class PlayArea : MonoBehaviour
 
     public Vector2Int PositionToGrid(Vector2 position)
     {
-        Debug.Assert(position.x >= _BottomLeftCorner.x + _CellSize * 0.5f &&
-                     position.y >= _BottomLeftCorner.y + _CellSize * 0.5f &&
-                     position.x <= _TopRightCorner.x - _CellSize * 0.5f &&
-                     position.y <= _TopRightCorner.y - _CellSize * 0.5f);
+        Debug.Assert(position.x >= _BottomLeftCorner.x + cellSize * 0.5f &&
+                     position.y >= _BottomLeftCorner.y + cellSize * 0.5f &&
+                     position.x <= _TopRightCorner.x - cellSize * 0.5f &&
+                     position.y <= _TopRightCorner.y - cellSize * 0.5f);
 
         Vector2 relativePosition = position - _BottomLeftCorner;
 
-        return new Vector2Int((int)relativePosition.x / (int)_CellSize, (int)relativePosition.y / (int)_CellSize);
+        return new Vector2Int((int)relativePosition.x / (int)cellSize, (int)relativePosition.y / (int)cellSize);
     }
 
     public void MarkStaticPieces(Transform[] positions)
@@ -132,7 +132,7 @@ public class PlayArea : MonoBehaviour
                         break;
                 }
 
-                Gizmos.DrawWireCube(_BottomLeftCorner + new Vector2(x * _CellSize + _CellSize * 0.5f, y * _CellSize + _CellSize * 0.5f), new Vector2(_CellSize, _CellSize));
+                Gizmos.DrawWireCube(_BottomLeftCorner + new Vector2(x * cellSize + cellSize * 0.5f, y * cellSize + cellSize * 0.5f), new Vector2(cellSize, cellSize));
             }
         }
     }

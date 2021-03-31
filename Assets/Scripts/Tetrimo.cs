@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class Tetrimo : MonoBehaviour
@@ -11,12 +9,12 @@ public class Tetrimo : MonoBehaviour
     }
 
     [SerializeField]
-    private TetrimoConfig _Config = null;
+    private TetrimoConfig config = null;
 
     [SerializeField]
-    private Transform[] _parts;
+    private Transform[] parts;
 
-    private State _State = State.Moving;
+    private State _state = State.Moving;
 
     float _distanceToColision = float.MaxValue;
 
@@ -31,20 +29,20 @@ public class Tetrimo : MonoBehaviour
 
     private void Update()
     {
-        if (_State == State.Stopped)
+        if (_state == State.Stopped)
         {
             return;
         }
 
-        float distance = Time.deltaTime * _Config.VerticalSpeed;
+        float distance = Time.deltaTime * config.VerticalSpeed;
 
         if (distance > _distanceToColision)
         {
             distance = _distanceToColision;
             _distanceToColision = 0;
 
-            _State = State.Stopped;
-            PlayArea.MarkStaticPieces(_parts);
+            _state = State.Stopped;
+            PlayArea.MarkStaticPieces(parts);
         }
         else
         {
@@ -58,7 +56,7 @@ public class Tetrimo : MonoBehaviour
     {
         _distanceToColision = float.MaxValue;
 
-        foreach(Transform part in _parts)
+        foreach(Transform part in parts)
         {
             float distance = PlayArea.GetDistanceToCollision(part.position, GameState.Instance.DirectionGrid);
 

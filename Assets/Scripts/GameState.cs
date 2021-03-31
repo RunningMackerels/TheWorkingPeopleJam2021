@@ -4,30 +4,30 @@ using UnityEngine;
 
 public class GameState : MonoBehaviour
 {
-    private static GameState _Instance;
+    private static GameState _instance;
 
-    private Vector2Int _Direction = Vector2Int.down;
+    private Vector2Int _direction = Vector2Int.down;
 
-    public static GameState Instance => _Instance;
+    public static GameState Instance => _instance;
 
-    public Vector2Int DirectionGrid => _Direction;
+    public Vector2Int DirectionGrid => _direction;
     public Vector2 Direction
     {
         get
         {
-            return new Vector2(_Direction.x, _Direction.y);
+            return new Vector2(_direction.x, _direction.y);
         }
     }
 
     private void Awake()
     {
-        if (_Instance != null && _Instance != this)
+        if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
         }
         else
         {
-            _Instance = this;
+            _instance = this;
         }
     }
 }
