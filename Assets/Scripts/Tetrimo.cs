@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Tetrimo : MonoBehaviour
@@ -33,6 +34,8 @@ public class Tetrimo : MonoBehaviour
             return;
         }
 
+        CheckAndMoveSides();
+
         float speedMultiplier = -Mathf.Clamp(Input.GetAxis("Vertical"), -1f, 0f) * config.VerticalBoost;        
 
         float distance = Time.deltaTime * (config.VerticalSpeed + speedMultiplier);
@@ -53,6 +56,50 @@ public class Tetrimo : MonoBehaviour
         transform.Translate(GameState.Instance.Direction * distance);
     }
 
+    private void CheckAndMoveSides()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            float distanceToColision = float.MaxValue;
+            foreach (Transform part in parts)
+            {
+                float distance = PlayArea.GetDistanceToCollision(part.position, GameState.Instance.LeftDirectionGrid);
+
+                if (distance < distanceToColision)
+                {
+                    distanceToColision = distance;
+                }
+            }
+
+            if (distanceToColision > 0)
+            {
+                transform.Translate(GameState.Instance.LeftDirection * PlayArea.CellSize);
+            }
+
+            CalculateEndPosition();
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            float distanceToColision = float.MaxValue;
+            foreach (Transform part in parts)
+            {
+                float distance = PlayArea.GetDistanceToCollision(part.position, GameState.Instance.RightDirectionGrid);
+
+                if (distance < distanceToColision)
+                {
+                    distanceToColision = distance;
+                }
+            }
+
+            if (distanceToColision > 0)
+            {
+                transform.Translate(GameState.Instance.RightDirection * PlayArea.CellSize);
+            }
+
+            CalculateEndPosition();
+        }
+    }
+
     private void CalculateEndPosition()
     {
         _distanceToColision = float.MaxValue;
@@ -60,6 +107,8 @@ public class Tetrimo : MonoBehaviour
         foreach(Transform part in parts)
         {
             float distance = PlayArea.GetDistanceToCollision(part.position, GameState.Instance.DirectionGrid);
+
+            Debug.LogWarning(part.name + " " + distance.ToString("N2"));
 
             if (distance < _distanceToColision)
             {

@@ -8,6 +8,10 @@ public class GameState : MonoBehaviour
 
     private Vector2Int _direction = Vector2Int.down;
 
+    private Vector2Int _leftDirection = Vector2Int.left;
+
+    private Vector2Int _rightDirection = Vector2Int.right;
+
     public static GameState Instance => _instance;
 
     public Vector2Int DirectionGrid => _direction;
@@ -16,6 +20,24 @@ public class GameState : MonoBehaviour
         get
         {
             return new Vector2(_direction.x, _direction.y);
+        }
+    }
+
+    public Vector2Int LeftDirectionGrid => _leftDirection;
+    public Vector2 LeftDirection
+    {
+        get
+        {
+            return new Vector2(_leftDirection.x, _leftDirection.y);
+        }
+    }
+
+    public Vector2Int RightDirectionGrid => _rightDirection;
+    public Vector2 RightDirection
+    {
+        get
+        {
+            return new Vector2(_rightDirection.x, _rightDirection.y);
         }
     }
 

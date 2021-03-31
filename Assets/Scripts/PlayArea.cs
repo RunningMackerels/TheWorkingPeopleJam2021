@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayArea : MonoBehaviour
@@ -29,6 +30,7 @@ public class PlayArea : MonoBehaviour
 
     private Rect _Extentents => new Rect(_BottomLeftCorner, new Vector2(width * cellSize, height * cellSize));
 
+    public float CellSize => cellSize;
 
     private void Awake()
     {
@@ -64,11 +66,13 @@ public class PlayArea : MonoBehaviour
 
     public float GetDistanceToCollision(Vector2 origin, Vector2Int direction)
     {
+        Vector2 directionFilter = new Vector2(Mathf.Abs(direction.x), Mathf.Abs(direction.y));
+
         Vector2Int originGrid = PositionToGrid(origin);
 
         int gridDistance = DistanceToNextOccupiedGrid(originGrid, direction);
 
-        float distanceToGridCenter = (origin - _BottomLeftCorner - Vector2.one * cellSize * 0.5f - new Vector2(originGrid.x * cellSize, originGrid.y * cellSize)).magnitude;
+        float distanceToGridCenter = ((origin - _BottomLeftCorner - Vector2.one * cellSize * 0.5f - new Vector2(originGrid.x * cellSize, originGrid.y * cellSize)) * directionFilter).magnitude;
 
         return distanceToGridCenter + gridDistance * cellSize;
     }
