@@ -26,7 +26,6 @@ public class Tetrimo : MonoBehaviour
     }
 
 
-
     private void Update()
     {
         if (_state == State.Stopped)
@@ -34,7 +33,9 @@ public class Tetrimo : MonoBehaviour
             return;
         }
 
-        float distance = Time.deltaTime * config.VerticalSpeed;
+        float speedMultiplier = -Mathf.Clamp(Input.GetAxis("Vertical"), -1f, 0f) * config.VerticalBoost;        
+
+        float distance = Time.deltaTime * (config.VerticalSpeed + speedMultiplier);
 
         if (distance > _distanceToColision)
         {

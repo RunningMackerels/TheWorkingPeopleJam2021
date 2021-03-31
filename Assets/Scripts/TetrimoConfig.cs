@@ -4,4 +4,5 @@ using UnityEngine;
 public class TetrimoConfig : ScriptableObject
 {
     public float VerticalSpeed = 5f;
+    public float VerticalBoost = 2f;
 }

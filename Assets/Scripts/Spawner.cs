@@ -42,6 +42,7 @@ public class Spawner : MonoBehaviour
             Destroy(_instancedTetrimos[i].gameObject);
         }
         _instancedTetrimos.Clear();
+        _playArea.InitializeGrid();
     }
 
     private void Update()

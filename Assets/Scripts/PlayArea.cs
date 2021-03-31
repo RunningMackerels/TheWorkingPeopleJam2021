@@ -40,7 +40,7 @@ public class PlayArea : MonoBehaviour
         InitializeGrid();
     }
 
-    private void InitializeGrid()
+    public void InitializeGrid()
     {
         _grid = new int[width, height];
         for (int x = 0; x < width; x++)
