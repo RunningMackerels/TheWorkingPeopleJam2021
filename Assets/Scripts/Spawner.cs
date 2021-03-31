@@ -1,20 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField]
-    private List<Tetrimo> _TetrimosPrefabs = new List<Tetrimo>();
+    [FormerlySerializedAs("_TetrimosPrefabs")] [SerializeField]
+    private List<Tetrimo> _tetrimosPrefabs = new List<Tetrimo>();
 
-    private List<Tetrimo> _InstancedTetrimos = new List<Tetrimo>();
+    private List<Tetrimo> _instancedTetrimos = new List<Tetrimo>();
 
     [ContextMenu("Spawn Piece")]
     private void SpawnPiece()
     {
-        int pieceIdx = Mathf.RoundToInt(Random.Range(0, _TetrimosPrefabs.Count));
+        int pieceIdx = Mathf.RoundToInt(Random.Range(0, _tetrimosPrefabs.Count));
 
-        _InstancedTetrimos.Add(Instantiate(_TetrimosPrefabs[pieceIdx], transform, false));
+        _instancedTetrimos.Add(Instantiate(_tetrimosPrefabs[pieceIdx], transform, false));
     }
 
     private void Update()
