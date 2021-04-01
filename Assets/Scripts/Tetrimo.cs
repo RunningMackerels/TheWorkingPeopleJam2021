@@ -33,7 +33,10 @@ public class Tetrimo : MonoBehaviour
             return;
         }
 
-        CheckAndMoveSides();
+        if (!CheckAndMoveSides())
+        {
+            CheckAndRotate();
+        }
 
         float speedMultiplier = -Mathf.Clamp(Input.GetAxis("Vertical"), -1f, 0f) * config.VerticalBoost;        
 
@@ -53,7 +56,7 @@ public class Tetrimo : MonoBehaviour
             _distanceToColision -= distance;
         }
 
-        transform.Translate(GameState.Instance.Direction * distance);
+        transform.Translate(GameState.Instance.Direction * distance, Space.World);
 
         if (_state == State.Stopped)
         {
@@ -61,15 +64,31 @@ public class Tetrimo : MonoBehaviour
         }
     }
 
-    private void CheckAndMoveSides()
+    private bool CheckAndMoveSides()
     {
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             MoveSideways(GameState.Instance.LeftDirectionGrid, GameState.Instance.LeftDirection);
+            return true;
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             MoveSideways(GameState.Instance.RightDirectionGrid, GameState.Instance.RightDirection);
+            return true;
+        }
+
+        return false;
+    }
+
+    private void CheckAndRotate()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Rotate(90f);
+        }
+        else if (Input.GetKeyDown(KeyCode.E))
+        {
+            Rotate(-90f);
         }
     }
 
@@ -90,13 +109,23 @@ public class Tetrimo : MonoBehaviour
 
         if (distanceToColision > 0)
         {
-            transform.Translate(direction * PlayArea.CellSize);
+            transform.Translate(direction * PlayArea.CellSize, Space.World);
         }
 
         CalculateEndPosition();
     }
 
+    private void Rotate(float angle)
+    {
+        transform.Rotate(new Vector3(0f, 0f, angle));
 
+        if (PlayArea.CheckInterception(parts))
+        {
+            transform.Rotate(new Vector3(0f, 0f, -angle));
+        }
+
+        CalculateEndPosition();
+    }
 
     private void CalculateEndPosition()
     {

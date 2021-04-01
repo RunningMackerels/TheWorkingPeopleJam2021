@@ -106,6 +106,20 @@ public class PlayArea : MonoBehaviour
         return new Vector2Int((int)relativePosition.x / (int)cellSize, (int)relativePosition.y / (int)cellSize);
     }
 
+    public bool CheckInterception(Transform[] positions)
+    {
+        foreach(Transform piece in positions)
+        {
+            Vector2Int gridID = PositionToGrid(piece.position);
+            if (_grid[gridID.x, gridID.y] > EMPTY)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public Vector2 GridCenter(Vector2Int gridPosition)
     {
         return _BottomLeftCorner + new Vector2(gridPosition.x, gridPosition.y) * cellSize + Vector2.one * 0.5f * cellSize;
