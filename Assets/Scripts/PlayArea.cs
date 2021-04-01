@@ -1,5 +1,8 @@
 using System;
+using System.Numerics;
 using UnityEngine;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
 public class PlayArea : MonoBehaviour
 {
@@ -28,6 +31,7 @@ public class PlayArea : MonoBehaviour
     private Vector2 _BottomLeftCorner => transform.position - new Vector3(cellSize * width * 0.5f, cellSize * height * 0.5f, 0f);
     private Vector2 _TopRightCorner => transform.position + new Vector3(cellSize * width * 0.5f, cellSize * height * 0.5f, 0f);
 
+    private Vector2 _HalfCellSize => new Vector2(cellSize * 0.5f, cellSize * 0.5f);
     private Rect _Extentents => new Rect(_BottomLeftCorner, new Vector2(width * cellSize, height * cellSize));
 
     public float CellSize => cellSize;
@@ -75,7 +79,7 @@ public class PlayArea : MonoBehaviour
 
         float distanceToGridCenter = ((origin - originGridCenter) * directionFilter).magnitude;
 
-        return gridDistance * cellSize + distanceToGridCenter;
+        return Mathf.Floor((gridDistance * cellSize + distanceToGridCenter));
     }
 
     private int DistanceToNextOccupiedGrid(Vector2Int gridOriginIdx, Vector2Int directionNormalized)
@@ -88,7 +92,7 @@ public class PlayArea : MonoBehaviour
         }
         return distance;
     }
-
+    
     public Vector2Int PositionToGrid(Vector2 position)
     {
         Debug.Assert(position.x >= _BottomLeftCorner.x + cellSize * 0.5f &&
@@ -97,13 +101,21 @@ public class PlayArea : MonoBehaviour
                      position.y <= _TopRightCorner.y - cellSize * 0.5f);
 
         Vector2 relativePosition = position - _BottomLeftCorner;
-
+        
         return new Vector2Int((int)relativePosition.x / (int)cellSize, (int)relativePosition.y / (int)cellSize);
     }
 
     public Vector2 GridCenter(Vector2Int gridPosition)
     {
         return _BottomLeftCorner + new Vector2(gridPosition.x, gridPosition.y) * cellSize;
+    }
+
+    public Vector3 Behave(Vector3 origin)
+    {
+        Vector2Int originGrid = PositionToGrid(origin);
+        Vector2 originGridCenter = GridCenter(originGrid);
+
+        return originGridCenter + _HalfCellSize;
     }
 
     public void MarkStaticPieces(Transform[] positions)

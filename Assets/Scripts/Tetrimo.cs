@@ -35,11 +35,13 @@ public class Tetrimo : MonoBehaviour
         }
 
         CheckAndMoveSides();
+        CalculateEndPosition();
 
         float speedMultiplier = -Mathf.Clamp(Input.GetAxis("Vertical"), -1f, 0f) * config.VerticalBoost;        
 
         float distance = Time.deltaTime * (config.VerticalSpeed + speedMultiplier);
 
+        
         if (distance > _distanceToColision)
         {
             distance = _distanceToColision;
@@ -54,51 +56,45 @@ public class Tetrimo : MonoBehaviour
         }
 
         transform.Translate(GameState.Instance.Direction * distance);
+        
+        if (_state == State.Stopped)
+        {
+            transform.position = PlayArea.Behave(transform.position);
+        }
     }
 
     private void CheckAndMoveSides()
     {
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            float distanceToColision = float.MaxValue;
-            foreach (Transform part in parts)
-            {
-                float distance = PlayArea.GetDistanceToCollision(part.position, GameState.Instance.LeftDirectionGrid);
-
-                if (distance < distanceToColision)
-                {
-                    distanceToColision = distance;
-                }
-            }
-
-            if (distanceToColision > 0)
-            {
-                transform.Translate(GameState.Instance.LeftDirection * PlayArea.CellSize);
-            }
-
-            CalculateEndPosition();
+            MoveSideways(GameState.Instance.LeftDirectionGrid, GameState.Instance.LeftDirection);
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            float distanceToColision = float.MaxValue;
-            foreach (Transform part in parts)
-            {
-                float distance = PlayArea.GetDistanceToCollision(part.position, GameState.Instance.RightDirectionGrid);
-
-                if (distance < distanceToColision)
-                {
-                    distanceToColision = distance;
-                }
-            }
-
-            if (distanceToColision > 0)
-            {
-                transform.Translate(GameState.Instance.RightDirection * PlayArea.CellSize);
-            }
-
-            CalculateEndPosition();
+            MoveSideways(GameState.Instance.RightDirectionGrid, GameState.Instance.RightDirection);
         }
     }
+
+    private void MoveSideways(Vector2Int directionGrid, Vector2 direction)
+    {
+        float distanceToColision = float.MaxValue;
+        foreach (Transform part in parts)
+        {
+            float distance = PlayArea.GetDistanceToCollision(part.position, directionGrid);
+
+            if (distance < distanceToColision)
+            {
+                distanceToColision = distance;
+            }
+        }
+
+        if (distanceToColision > 0)
+        {
+            transform.Translate(direction * PlayArea.CellSize);
+        }
+    }
+
+
 
     private void CalculateEndPosition()
     {
