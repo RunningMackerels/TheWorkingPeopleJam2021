@@ -1,8 +1,6 @@
-using System;
-using System.Numerics;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using Vector2 = UnityEngine.Vector2;
-using Vector3 = UnityEngine.Vector3;
 
 public class PlayArea : MonoBehaviour
 {
@@ -35,6 +33,8 @@ public class PlayArea : MonoBehaviour
     private Rect _Extentents => new Rect(_BottomLeftCorner, new Vector2(width * cellSize, height * cellSize));
 
     public float CellSize => cellSize;
+
+    private Dictionary<Vector2Int, TetrimoPart> _placedPieces = new Dictionary<Vector2Int, TetrimoPart>();
 
     private void Awake()
     {
@@ -106,11 +106,11 @@ public class PlayArea : MonoBehaviour
         return new Vector2Int((int)relativePosition.x / (int)cellSize, (int)relativePosition.y / (int)cellSize);
     }
 
-    public bool CheckInterception(Transform[] positions)
+    public bool CheckInterception(List<TetrimoPart> parts)
     {
-        foreach(Transform piece in positions)
+        foreach(TetrimoPart part in parts)
         {
-            Vector2Int gridID = PositionToGrid(piece.position);
+            Vector2Int gridID = PositionToGrid(part.transform.position);
             if (_grid[gridID.x, gridID.y] > EMPTY)
             {
                 return true;
@@ -133,12 +133,25 @@ public class PlayArea : MonoBehaviour
         return originGridCenter;
     }
 
-    public void MarkStaticPieces(Transform[] positions)
+    public void PlacePieces(List<TetrimoPart> parts)
     {
-        foreach(Transform piece in positions)
+        foreach(TetrimoPart part in parts)
         {
-            Vector2Int gridID = PositionToGrid(piece.position);
+            Vector2Int gridID = PositionToGrid(part.transform.position);
             _grid[gridID.x, gridID.y] = STATIC_PIECE;
+            _placedPieces[gridID] = part;
+        }
+
+        for (int y = 1; y < height - 1; y++)
+        {
+            IEnumerable<KeyValuePair<Vector2Int, TetrimoPart>> placePieceInLine = _placedPieces.Where(item => item.Key.y == y && _grid[item.Key.x, item.Key.y] == STATIC_PIECE);
+            if (placePieceInLine.Count() == (width - 2))
+            {
+                foreach(KeyValuePair<Vector2Int, TetrimoPart> piece in placePieceInLine)
+                {
+                    piece.Value.Remove();
+                }
+            }
         }
     }
 

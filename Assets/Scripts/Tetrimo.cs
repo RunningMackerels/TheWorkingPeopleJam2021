@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Tetrimo : MonoBehaviour
@@ -13,7 +14,7 @@ public class Tetrimo : MonoBehaviour
     private TetrimoConfig config = null;
 
     [SerializeField]
-    private Transform[] parts;
+    private List<TetrimoPart> parts;
 
     private State _state = State.Moving;
 
@@ -23,6 +24,10 @@ public class Tetrimo : MonoBehaviour
 
     private void Start()
     {
+        foreach (TetrimoPart part in parts)
+        {
+            part.ParentTetrimo = this;
+        }
         CalculateEndPosition();
     }
 
@@ -49,7 +54,7 @@ public class Tetrimo : MonoBehaviour
             _distanceToColision = 0;
 
             _state = State.Stopped;
-            PlayArea.MarkStaticPieces(parts);
+            PlayArea.PlacePieces(parts);
         }
         else
         {
@@ -95,9 +100,9 @@ public class Tetrimo : MonoBehaviour
     private void MoveSideways(Vector2Int directionGrid, Vector2 direction)
     {
         float distanceToColision = float.MaxValue;
-        foreach (Transform part in parts)
+        foreach (TetrimoPart part in parts)
         {
-            float distance = PlayArea.GetDistanceToCollision(part.position, directionGrid);
+            float distance = PlayArea.GetDistanceToCollision(part.transform.position, directionGrid);
 
             if (distance < distanceToColision)
             {
@@ -129,14 +134,21 @@ public class Tetrimo : MonoBehaviour
     {
         _distanceToColision = float.MaxValue;
 
-        foreach(Transform part in parts)
+        foreach(TetrimoPart part in parts)
         {
-            float distance = PlayArea.GetDistanceToCollision(part.position, GameState.Instance.DirectionGrid);
+            float distance = PlayArea.GetDistanceToCollision(part.transform.position, GameState.Instance.DirectionGrid);
 
             if (distance < _distanceToColision)
             {
                 _distanceToColision = distance;
             }
         }
+    }
+
+    public void RemovePart(TetrimoPart tetrimoPart)
+    {
+        parts.Remove(tetrimoPart);
+
+        //TODO add logic to split the tetrimo
     }
 }
