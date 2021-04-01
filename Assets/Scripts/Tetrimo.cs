@@ -105,8 +105,6 @@ public class Tetrimo : MonoBehaviour
             }
         }
 
-        Debug.LogError(distanceToColision.ToString("N2"));
-
         if (distanceToColision > 0)
         {
             transform.Translate(direction * PlayArea.CellSize, Space.World);
@@ -140,7 +138,5 @@ public class Tetrimo : MonoBehaviour
                 _distanceToColision = distance;
             }
         }
-
-        Debug.LogWarning(_distanceToColision.ToString("N2"));
     }
 }
