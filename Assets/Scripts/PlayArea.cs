@@ -77,9 +77,10 @@ public class PlayArea : MonoBehaviour
 
         int gridDistance = DistanceToNextOccupiedGrid(originGrid, direction);
 
-        float distanceToGridCenter = ((origin - originGridCenter) * directionFilter).magnitude;
+        Vector2 originToCenterOrigin = origin - originGridCenter;
+        float distanceToGridCenter = originToCenterOrigin.x * directionFilter.x + originToCenterOrigin.y * directionFilter.y;
 
-        return Mathf.Floor((gridDistance * cellSize + distanceToGridCenter));
+        return gridDistance * cellSize + distanceToGridCenter;
     }
 
     private int DistanceToNextOccupiedGrid(Vector2Int gridOriginIdx, Vector2Int directionNormalized)
@@ -107,7 +108,7 @@ public class PlayArea : MonoBehaviour
 
     public Vector2 GridCenter(Vector2Int gridPosition)
     {
-        return _BottomLeftCorner + new Vector2(gridPosition.x, gridPosition.y) * cellSize;
+        return _BottomLeftCorner + new Vector2(gridPosition.x, gridPosition.y) * cellSize + Vector2.one * 0.5f * cellSize;
     }
 
     public Vector3 Behave(Vector3 origin)
@@ -115,7 +116,7 @@ public class PlayArea : MonoBehaviour
         Vector2Int originGrid = PositionToGrid(origin);
         Vector2 originGridCenter = GridCenter(originGrid);
 
-        return originGridCenter + _HalfCellSize;
+        return originGridCenter;
     }
 
     public void MarkStaticPieces(Transform[] positions)
@@ -157,5 +158,8 @@ public class PlayArea : MonoBehaviour
                 Gizmos.DrawWireCube(_BottomLeftCorner + new Vector2(x * cellSize + cellSize * 0.5f, y * cellSize + cellSize * 0.5f), new Vector2(cellSize, cellSize));
             }
         }
+
+        Gizmos.color = Color.white;
+        Gizmos.DrawLine(_BottomLeftCorner, _TopRightCorner);
     }
 }

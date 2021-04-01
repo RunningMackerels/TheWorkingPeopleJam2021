@@ -26,7 +26,6 @@ public class Tetrimo : MonoBehaviour
         CalculateEndPosition();
     }
 
-
     private void Update()
     {
         if (_state == State.Stopped)
@@ -35,7 +34,6 @@ public class Tetrimo : MonoBehaviour
         }
 
         CheckAndMoveSides();
-        CalculateEndPosition();
 
         float speedMultiplier = -Mathf.Clamp(Input.GetAxis("Vertical"), -1f, 0f) * config.VerticalBoost;        
 
@@ -56,7 +54,7 @@ public class Tetrimo : MonoBehaviour
         }
 
         transform.Translate(GameState.Instance.Direction * distance);
-        
+
         if (_state == State.Stopped)
         {
             transform.position = PlayArea.Behave(transform.position);
@@ -88,10 +86,14 @@ public class Tetrimo : MonoBehaviour
             }
         }
 
+        Debug.LogError(distanceToColision.ToString("N2"));
+
         if (distanceToColision > 0)
         {
             transform.Translate(direction * PlayArea.CellSize);
         }
+
+        CalculateEndPosition();
     }
 
 
@@ -104,12 +106,12 @@ public class Tetrimo : MonoBehaviour
         {
             float distance = PlayArea.GetDistanceToCollision(part.position, GameState.Instance.DirectionGrid);
 
-            Debug.LogWarning(part.name + " " + distance.ToString("N2"));
-
             if (distance < _distanceToColision)
             {
                 _distanceToColision = distance;
             }
         }
+
+        Debug.LogWarning(_distanceToColision.ToString("N2"));
     }
 }
