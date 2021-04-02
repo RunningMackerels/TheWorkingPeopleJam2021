@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
@@ -168,43 +169,29 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 
     public void CheckIntegrity()
     {
-        Vector2Int minPosition = new Vector2Int(int.MaxValue, int.MaxValue);
-        Vector2Int maxPosition = new Vector2Int(int.MinValue, int.MinValue);
-
-        HashSet<int> horizontalPiecesIDs = new HashSet<int>();
         HashSet<int> verticalPiecesIDs = new HashSet<int>();
 
         //check if they have holes
         foreach (TetrimoPart part in parts)
         {
-            Vector2Int gridPosition = PlayArea.PositionToGrid(part.transform.position);
+            verticalPiecesIDs.Add(PlayArea.PositionToGrid(part.transform.position).y);
+        }
 
-            horizontalPiecesIDs.Add(gridPosition.x);
-            verticalPiecesIDs.Add(gridPosition.y);
+        List<int> verticalPiecesIDsList = verticalPiecesIDs.ToList();
+        verticalPiecesIDsList.Sort();
 
-            if (gridPosition.x < minPosition.x)
-            {
-                minPosition.x = gridPosition.x;
-            }
-            else if (gridPosition.x > maxPosition.x)
-            {
-                maxPosition.x = gridPosition.x;
-            }
+        bool doSplit = false;
 
-            if (gridPosition.y < minPosition.y)
+        for(int i = 1; i < verticalPiecesIDsList.Count; i++)
+        {
+            if (verticalPiecesIDsList[i] != verticalPiecesIDsList[i-1] + 1)
             {
-                minPosition.y = gridPosition.y;
-            }
-            else if (gridPosition.y > maxPosition.y)
-            {
-                maxPosition.y = gridPosition.y;
+                doSplit = true;
+                break;
             }
         }
 
-        Vector2Int pieceExtents = maxPosition - minPosition;
-
-        //maybe we just need to worry with vertical splits for now
-        if (verticalPiecesIDs.Count < pieceExtents.y || horizontalPiecesIDs.Count < pieceExtents.x)
+        if (doSplit)
         {
             Debug.LogError("We need to split piece " + name);
         }
