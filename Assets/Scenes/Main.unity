@@ -235,7 +235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dae8c714cb71a4447b6ebd07bf22ff66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 15
+  width: 9
   height: 22
   cellSize: 1
 --- !u!4 &655511224
@@ -333,6 +333,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e94a73ead8ab35f499b5b35b6bde8173, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playArea: {fileID: 655511223}
+  InstancedTetrimos: []
 --- !u!4 &1738472656
 Transform:
   m_ObjectHideFlags: 0

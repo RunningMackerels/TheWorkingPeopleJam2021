@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameState : MonoBehaviour
@@ -102,5 +103,21 @@ public class GameState : MonoBehaviour
 
         InstancedTetrimos[_currentTetrimoFalling].OnStopped += MakeOneFall;
         InstancedTetrimos[_currentTetrimoFalling].MakeItFall();
+    }
+
+    public void ControlledRain(int aboveRow)
+    {
+        List<Tetrimo> toMove = new List<Tetrimo>();
+
+        foreach(Tetrimo piece in InstancedTetrimos)
+        {
+            //TODO need to be tweaked for different orientation
+            if (piece.Parts.Any(part => PlayArea.PositionToGrid(part.transform.position).y > aboveRow))
+            {
+                PlayArea.RemoveStatic(piece.Parts);
+                piece.transform.Translate(Direction * playArea.CellSize, Space.World);
+                playArea.AssignType(piece.Parts, PlayArea.STATIC_PIECE);
+            }
+        }
     }
 }

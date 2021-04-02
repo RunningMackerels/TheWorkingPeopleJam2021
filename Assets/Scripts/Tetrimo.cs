@@ -206,9 +206,14 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         GameObject newGOPiece = new GameObject(name + "_part2");
         Transform newTransformPiece = newGOPiece.GetComponent<Transform>();
         newTransformPiece.position = transform.position;
-        newGOPiece.AddComponent<Tetrimo>().Parts = newPieceParts;
+        Tetrimo newPiece = newGOPiece.AddComponent<Tetrimo>();
+        newPiece.Parts = newPieceParts;
+        newPiece.config = config;
+        newPiece._state = State.Stopped;
         newPieceParts.ForEach(part => part.transform.parent = newTransformPiece);
         newTransformPiece.parent = transform.parent;
+
+        GameState.Instance.InstancedTetrimos.Add(newPiece);
 
         name += "_part1";
     }

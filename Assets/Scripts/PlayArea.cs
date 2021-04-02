@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class PlayArea : MonoBehaviour
 {
-    private const int EMPTY = 0;
-    private const int MOVING_PIECE = 1;
-    private const int STATIC_PIECE = 2;
-    private const int BORDER = 3;
+    public const int EMPTY = 0;
+    public const int MOVING_PIECE = 1;
+    public const int STATIC_PIECE = 2;
+    public const int BORDER = 3;
 
     [SerializeField, Range(0f, 50f)]
     private int width = 20;
@@ -141,6 +141,8 @@ public class PlayArea : MonoBehaviour
 
         for (int y = 1; y < height - 1; y++)
         {
+            bool thisRowCleared = false;
+
             IEnumerable<KeyValuePair<Vector2Int, TetrimoPart>> placePieceInLine = _placedPieces.Where(item => item.Key.y == y && _grid[item.Key.x, item.Key.y] == STATIC_PIECE);
             if (placePieceInLine.Count() == (width - 2))
             {
@@ -151,13 +153,19 @@ public class PlayArea : MonoBehaviour
                 }
 
                 rowCleared = true;
-            }
-        }
+                thisRowCleared = true;
 
-        if (rowCleared)
-        {
-            GameState.Instance.CheckTetrimosIntegrity();
-            //GameState.Instance.DropOne(GameState.Instance.Direction.x);
+                GameState.Instance.CheckTetrimosIntegrity();
+            }
+
+            if (rowCleared)
+            {
+                GameState.Instance.ControlledRain(y);
+                if (thisRowCleared)
+                {
+                    y--;
+                }
+            }
         }
     }
 
@@ -166,7 +174,7 @@ public class PlayArea : MonoBehaviour
         AssignType(parts, EMPTY);
     }
 
-    private void AssignType(List<TetrimoPart> parts, int type)
+    public void AssignType(List<TetrimoPart> parts, int type)
     {
         foreach (TetrimoPart part in parts)
         {
