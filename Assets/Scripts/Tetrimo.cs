@@ -7,7 +7,8 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
     private enum State
     {
         Stopped,
-        Moving,
+        Interactable,
+        Falling,
     }
 
     [SerializeField]
@@ -16,7 +17,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
     [SerializeField]
     private List<TetrimoPart> parts;
 
-    private State _state = State.Moving;
+    private State _state = State.Interactable;
 
     float _distanceToColision = float.MaxValue;
 
@@ -40,12 +41,17 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
             return;
         }
 
-        if (!CheckAndMoveSides())
-        {
-            CheckAndRotate();
-        }
+        float speedMultiplier = 1f;
 
-        float speedMultiplier = -Mathf.Clamp(Input.GetAxis("Vertical"), -1f, 0f) * config.VerticalBoost;        
+        if (_state == State.Interactable)
+        {
+            if (!CheckAndMoveSides())
+            {
+                CheckAndRotate();
+            }
+
+            speedMultiplier = -Mathf.Clamp(Input.GetAxis("Vertical"), -1f, 0f) * config.VerticalBoost;
+        }
 
         float distance = Time.deltaTime * (config.VerticalSpeed + speedMultiplier);
 
@@ -66,10 +72,11 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 
         transform.Translate(GameState.Instance.Direction * distance, Space.World);
 
-        if (_state == State.Stopped)
-        {
-            transform.position = PlayArea.Behave(transform.position);
-        }
+        //it is triggering an assert when falling, and it is not really necessary
+        //if (_state == State.Stopped)
+        //{
+        //    transform.position = PlayArea.Behave(transform.position);
+        //}
     }
 
     private bool CheckAndMoveSides()
@@ -167,7 +174,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 
         CalculateEndPosition();
 
-        _state = State.Moving;
+        _state = State.Falling;
     }
 
     public int CompareTo(Tetrimo other)

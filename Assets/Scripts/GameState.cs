@@ -78,8 +78,6 @@ public class GameState : MonoBehaviour
 
         _currentTetrimoFalling = -1;
         MakeOneFall();
-
-        //make them fall
     }
 
     private void MakeOneFall()
