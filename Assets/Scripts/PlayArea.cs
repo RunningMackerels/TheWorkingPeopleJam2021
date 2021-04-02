@@ -137,8 +137,6 @@ public class PlayArea : MonoBehaviour
     {
         AssignType(parts, STATIC_PIECE);
 
-        bool rowCleared = false;
-
         for (int y = 1; y < height - 1; y++)
         {
             bool thisRowCleared = false;
@@ -152,19 +150,15 @@ public class PlayArea : MonoBehaviour
                     _grid[piece.Key.x, piece.Key.y] = EMPTY;
                 }
 
-                rowCleared = true;
                 thisRowCleared = true;
 
                 GameState.Instance.CheckTetrimosIntegrity();
             }
 
-            if (rowCleared)
+            if (thisRowCleared)
             {
                 GameState.Instance.ControlledRain(y);
-                if (thisRowCleared)
-                {
-                    y--;
-                }
+                y--;
             }
         }
     }
