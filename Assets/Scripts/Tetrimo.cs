@@ -164,8 +164,54 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
             GameState.Instance.InstancedTetrimos.Remove(this);
             Destroy(gameObject);
         }
+    }
 
-        //TODO add logic to split the tetrimo
+    public void CheckIntegrity()
+    {
+        Vector2Int minPosition = new Vector2Int(int.MaxValue, int.MaxValue);
+        Vector2Int maxPosition = new Vector2Int(int.MinValue, int.MinValue);
+
+        HashSet<int> horizontalPiecesIDs = new HashSet<int>();
+        HashSet<int> verticalPiecesIDs = new HashSet<int>();
+
+        //check if they have holes
+        foreach (TetrimoPart part in parts)
+        {
+            Vector2Int gridPosition = PlayArea.PositionToGrid(part.transform.position);
+
+            horizontalPiecesIDs.Add(gridPosition.x);
+            verticalPiecesIDs.Add(gridPosition.y);
+
+            if (gridPosition.x < minPosition.x)
+            {
+                minPosition.x = gridPosition.x;
+            }
+            else if (gridPosition.x > maxPosition.x)
+            {
+                maxPosition.x = gridPosition.x;
+            }
+
+            if (gridPosition.y < minPosition.y)
+            {
+                minPosition.y = gridPosition.y;
+            }
+            else if (gridPosition.y > maxPosition.y)
+            {
+                maxPosition.y = gridPosition.y;
+            }
+        }
+
+        Vector2Int pieceExtents = maxPosition - minPosition;
+
+        //maybe we just need to worry with vertical splits for now
+        if (verticalPiecesIDs.Count < pieceExtents.y || horizontalPiecesIDs.Count < pieceExtents.x)
+        {
+            Debug.LogError("We need to split piece " + name);
+        }
+
+        //if they have holes split into 2 tetrimos
+
+        //update parts tetrimo parent transform and in script
     }
 
     public void MakeItFall()

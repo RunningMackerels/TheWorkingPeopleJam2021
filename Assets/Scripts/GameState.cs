@@ -72,6 +72,11 @@ public class GameState : MonoBehaviour
         playArea.InitializeGrid();
     }
 
+    public void CheckTetrimosIntegrity()
+    {
+        InstancedTetrimos.ForEach(tetrimo => tetrimo.CheckIntegrity());
+    }
+
     public void MakeItRain()
     {
         InstancedTetrimos.Sort();
