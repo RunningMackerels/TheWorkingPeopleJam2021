@@ -41,6 +41,15 @@ public class GameState : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    private PlayArea playArea = null;
+
+    public PlayArea PlayArea => playArea;
+
+    public List<Tetrimo> InstancedTetrimos = new List<Tetrimo>();
+
+    private int _currentTetrimoFalling = -1;
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -51,5 +60,44 @@ public class GameState : MonoBehaviour
         {
             _instance = this;
         }
+    }
+
+    public void ClearBoard()
+    {
+        for (int i = 0; i < InstancedTetrimos.Count; i++)
+        {
+            Destroy(InstancedTetrimos[i].gameObject);
+        }
+        InstancedTetrimos.Clear();
+        playArea.InitializeGrid();
+    }
+
+    public void MakeItRain()
+    {
+        InstancedTetrimos.Sort();
+
+        _currentTetrimoFalling = -1;
+        MakeOneFall();
+
+        //make them fall
+    }
+
+    private void MakeOneFall()
+    {
+        if (_currentTetrimoFalling >= 0)
+        {
+            InstancedTetrimos[_currentTetrimoFalling].OnStopped -= MakeOneFall;
+        }
+
+        _currentTetrimoFalling++;
+
+        if (_currentTetrimoFalling == InstancedTetrimos.Count)
+        {
+            //no more to fall here
+            return;
+        }
+
+        InstancedTetrimos[_currentTetrimoFalling].OnStopped += MakeOneFall;
+        InstancedTetrimos[_currentTetrimoFalling].MakeItFall();
     }
 }

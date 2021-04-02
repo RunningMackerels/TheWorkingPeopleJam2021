@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tetrimo : MonoBehaviour
+public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 {
     private enum State
     {
@@ -21,6 +21,8 @@ public class Tetrimo : MonoBehaviour
     float _distanceToColision = float.MaxValue;
 
     public PlayArea PlayArea { get; set; }
+
+    public Action OnStopped;
 
     private void Start()
     {
@@ -54,6 +56,7 @@ public class Tetrimo : MonoBehaviour
             _distanceToColision = 0;
 
             _state = State.Stopped;
+            OnStopped?.Invoke();
             PlayArea.PlacePieces(parts);
         }
         else
@@ -149,6 +152,35 @@ public class Tetrimo : MonoBehaviour
     {
         parts.Remove(tetrimoPart);
 
+        if (parts.Count == 0)
+        {
+            GameState.Instance.InstancedTetrimos.Remove(this);
+            Destroy(gameObject);
+        }
+
         //TODO add logic to split the tetrimo
+    }
+
+    public void MakeItFall()
+    {
+        PlayArea.RemoveStatic(parts);
+
+        CalculateEndPosition();
+
+        _state = State.Moving;
+    }
+
+    public int CompareTo(Tetrimo other)
+    {
+        HashSet<Tetrimo> adjacent = GameState.Instance.PlayArea.GetAdjacentPieces(parts, GameState.Instance.DirectionGrid);
+
+        if (adjacent.Contains(other))
+        {
+            return 1;
+        }
+        else
+        {
+            return -1;
+        }
     }
 }

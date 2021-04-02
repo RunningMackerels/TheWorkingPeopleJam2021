@@ -9,8 +9,6 @@ public class Spawner : MonoBehaviour
     [SerializeField]
     private List<Tetrimo> tetrimosPrefabs = new List<Tetrimo>();
 
-    private List<Tetrimo> _instancedTetrimos = new List<Tetrimo>();
-
     [SerializeField]
     private Tetrimo _nextPiece = null;
 
@@ -24,7 +22,7 @@ public class Spawner : MonoBehaviour
         Tetrimo spawnedPiece = Instantiate(_nextPiece, transform.position, transform.rotation, _playArea.transform);
         spawnedPiece.PlayArea = _playArea;
 
-        _instancedTetrimos.Add(spawnedPiece);
+        GameState.Instance.InstancedTetrimos.Add(spawnedPiece);
 
         PrepareNextPierce();
     }
@@ -35,16 +33,7 @@ public class Spawner : MonoBehaviour
         _nextPiece = tetrimosPrefabs[pieceIdx];
     }
 
-    private void ClearBoard()
-    {
-        for (int i = 0; i < _instancedTetrimos.Count; i++)
-        {
-            Destroy(_instancedTetrimos[i].gameObject);
-        }
-        _instancedTetrimos.Clear();
-        _playArea.InitializeGrid();
-    }
-
+   
     private void Update()
     {
 #if UNITY_EDITOR
@@ -54,7 +43,7 @@ public class Spawner : MonoBehaviour
         }
         if (Input.GetKeyUp(KeyCode.C))
         {
-            ClearBoard();
+            GameState.Instance.ClearBoard();
         }
 #endif
     }

@@ -24,7 +24,7 @@ public class PlayArea : MonoBehaviour
     /// 2 - static piece
     /// 3 - border
     /// </summary>
-    private int[,] _grid = null;
+    private Grid _grid = null;
 
     private Vector2 _BottomLeftCorner => transform.position - new Vector3(cellSize * width * 0.5f, cellSize * height * 0.5f, 0f);
     private Vector2 _TopRightCorner => transform.position + new Vector3(cellSize * width * 0.5f, cellSize * height * 0.5f, 0f);
@@ -48,7 +48,7 @@ public class PlayArea : MonoBehaviour
 
     public void InitializeGrid()
     {
-        _grid = new int[width, height];
+        _grid = new Grid(width, height);
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -135,12 +135,9 @@ public class PlayArea : MonoBehaviour
 
     public void PlacePieces(List<TetrimoPart> parts)
     {
-        foreach(TetrimoPart part in parts)
-        {
-            Vector2Int gridID = PositionToGrid(part.transform.position);
-            _grid[gridID.x, gridID.y] = STATIC_PIECE;
-            _placedPieces[gridID] = part;
-        }
+        AssignType(parts, STATIC_PIECE);
+
+        bool rowCleared = false;
 
         for (int y = 1; y < height - 1; y++)
         {
@@ -152,8 +149,59 @@ public class PlayArea : MonoBehaviour
                     piece.Value.Remove();
                     _grid[piece.Key.x, piece.Key.y] = EMPTY;
                 }
+
+                rowCleared = true;
             }
         }
+
+        if (rowCleared)
+        {
+            GameState.Instance.MakeItRain();
+        }
+    }
+
+    public void RemoveStatic(List<TetrimoPart> parts)
+    {
+        AssignType(parts, EMPTY);
+    }
+
+    private void AssignType(List<TetrimoPart> parts, int type)
+    {
+        foreach (TetrimoPart part in parts)
+        {
+            Vector2Int gridID = PositionToGrid(part.transform.position);
+            _grid[gridID.x, gridID.y] = type;
+            _placedPieces[gridID] = part;
+        }
+    }
+
+    public HashSet<Tetrimo> GetAdjacentPieces(List<TetrimoPart> parts, Vector2Int directionNormalized)
+    {
+        HashSet<Tetrimo> adjacent = new HashSet<Tetrimo>();
+
+        foreach(TetrimoPart part in parts)
+        {
+            Vector2Int gridPos = PositionToGrid(part.transform.position);
+
+            while (_grid[gridPos] != BORDER)
+            {
+                gridPos += directionNormalized;
+
+                switch (_grid[gridPos])
+                {
+                    case EMPTY:
+                        continue;
+                    case STATIC_PIECE:
+                        if (_placedPieces[gridPos].ParentTetrimo != part.ParentTetrimo)
+                        {
+                            adjacent.Add(_placedPieces[gridPos].ParentTetrimo);
+                        }
+                        continue;
+                }
+            }
+        }
+
+        return adjacent;
     }
 
     private void OnDrawGizmos()
