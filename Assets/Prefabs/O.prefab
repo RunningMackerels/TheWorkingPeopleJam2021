@@ -336,7 +336,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   config: {fileID: 11400000, guid: b3969a537444b674a9d14db06a8a87a8, type: 2}
-  parts:
+  Parts:
   - {fileID: 3480984534582254368}
   - {fileID: 2749417418002461538}
   - {fileID: 6683379156777488141}

@@ -15,8 +15,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
     [SerializeField]
     private TetrimoConfig config = null;
 
-    [SerializeField]
-    private List<TetrimoPart> parts;
+    public List<TetrimoPart> Parts;
 
     private State _state = State.Interactable;
 
@@ -28,7 +27,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 
     private void Start()
     {
-        foreach (TetrimoPart part in parts)
+        foreach (TetrimoPart part in Parts)
         {
             part.ParentTetrimo = this;
         }
@@ -64,7 +63,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 
             _state = State.Stopped;
             OnStopped?.Invoke();
-            PlayArea.PlacePieces(parts);
+            PlayArea.PlacePieces(Parts);
         }
         else
         {
@@ -111,7 +110,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
     private void MoveSideways(Vector2Int directionGrid, Vector2 direction)
     {
         float distanceToColision = float.MaxValue;
-        foreach (TetrimoPart part in parts)
+        foreach (TetrimoPart part in Parts)
         {
             float distance = PlayArea.GetDistanceToCollision(part.transform.position, directionGrid);
 
@@ -133,7 +132,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
     {
         transform.Rotate(new Vector3(0f, 0f, angle));
 
-        if (PlayArea.CheckInterception(parts))
+        if (PlayArea.CheckInterception(Parts))
         {
             transform.Rotate(new Vector3(0f, 0f, -angle));
         }
@@ -145,7 +144,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
     {
         _distanceToColision = float.MaxValue;
 
-        foreach(TetrimoPart part in parts)
+        foreach(TetrimoPart part in Parts)
         {
             float distance = PlayArea.GetDistanceToCollision(part.transform.position, GameState.Instance.DirectionGrid);
 
@@ -158,9 +157,9 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 
     public void RemovePart(TetrimoPart tetrimoPart)
     {
-        parts.Remove(tetrimoPart);
+        Parts.Remove(tetrimoPart);
 
-        if (parts.Count == 0)
+        if (Parts.Count == 0)
         {
             GameState.Instance.InstancedTetrimos.Remove(this);
             Destroy(gameObject);
@@ -172,7 +171,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         HashSet<int> verticalPiecesIDs = new HashSet<int>();
 
         //check if they have holes
-        foreach (TetrimoPart part in parts)
+        foreach (TetrimoPart part in Parts)
         {
             verticalPiecesIDs.Add(PlayArea.PositionToGrid(part.transform.position).y);
         }
@@ -182,28 +181,41 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 
         bool doSplit = false;
 
+        List<TetrimoPart> newPieceParts = new List<TetrimoPart>();
+
         for(int i = 1; i < verticalPiecesIDsList.Count; i++)
         {
             if (verticalPiecesIDsList[i] != verticalPiecesIDsList[i-1] + 1)
             {
                 doSplit = true;
-                break;
+            }
+
+            if (doSplit)
+            {
+                List<TetrimoPart> toSwap = Parts.Where(part => GameState.Instance.PlayArea.PositionToGrid(part.transform.position).y == verticalPiecesIDsList[i]).ToList();
+                toSwap.ForEach(part => Parts.Remove(part));
+                newPieceParts.AddRange(toSwap);
             }
         }
 
-        if (doSplit)
+        if (!doSplit)
         {
-            Debug.LogError("We need to split piece " + name);
+            return;
         }
 
-        //if they have holes split into 2 tetrimos
+        GameObject newGOPiece = new GameObject(name + "_part2");
+        Transform newTransformPiece = newGOPiece.GetComponent<Transform>();
+        newTransformPiece.position = transform.position;
+        newGOPiece.AddComponent<Tetrimo>().Parts = newPieceParts;
+        newPieceParts.ForEach(part => part.transform.parent = newTransformPiece);
+        newTransformPiece.parent = transform.parent;
 
-        //update parts tetrimo parent transform and in script
+        name += "_part1";
     }
 
     public void MakeItFall()
     {
-        PlayArea.RemoveStatic(parts);
+        PlayArea.RemoveStatic(Parts);
 
         CalculateEndPosition();
 
@@ -212,7 +224,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 
     public int CompareTo(Tetrimo other)
     {
-        HashSet<Tetrimo> adjacent = GameState.Instance.PlayArea.GetAdjacentPieces(parts, GameState.Instance.DirectionGrid);
+        HashSet<Tetrimo> adjacent = GameState.Instance.PlayArea.GetAdjacentPieces(Parts, GameState.Instance.DirectionGrid);
 
         if (adjacent.Contains(other))
         {

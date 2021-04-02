@@ -157,7 +157,7 @@ public class PlayArea : MonoBehaviour
         if (rowCleared)
         {
             GameState.Instance.CheckTetrimosIntegrity();
-            GameState.Instance.MakeItRain();
+            //GameState.Instance.DropOne(GameState.Instance.Direction.x);
         }
     }
 
