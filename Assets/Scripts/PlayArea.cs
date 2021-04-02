@@ -150,6 +150,7 @@ public class PlayArea : MonoBehaviour
                 foreach(KeyValuePair<Vector2Int, TetrimoPart> piece in placePieceInLine)
                 {
                     piece.Value.Remove();
+                    _grid[piece.Key.x, piece.Key.y] = EMPTY;
                 }
             }
         }

@@ -12,6 +12,6 @@ public class TetrimoPart : MonoBehaviour
     public void Remove()
     {
         ParentTetrimo.RemovePart(this);
-        Destroy(this);
+        Destroy(gameObject);
     }
 }
