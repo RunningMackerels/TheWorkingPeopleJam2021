@@ -97,11 +97,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 
     private void CheckAndRotate()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            Rotate(90f);
-        }
-        else if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             Rotate(-90f);
         }
