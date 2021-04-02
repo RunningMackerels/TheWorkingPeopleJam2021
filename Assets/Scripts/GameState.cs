@@ -75,7 +75,12 @@ public class GameState : MonoBehaviour
 
     public void CheckTetrimosIntegrity()
     {
-        InstancedTetrimos.ForEach(tetrimo => tetrimo.CheckIntegrity());
+        int initialNumberOfTetrimos = InstancedTetrimos.Count;
+
+        for(int i = 0; i < initialNumberOfTetrimos; i++)
+        {
+            InstancedTetrimos[i].CheckIntegrity();
+        }
     }
 
     public void MakeItRain()

@@ -137,10 +137,10 @@ public class PlayArea : MonoBehaviour
     {
         AssignType(parts, STATIC_PIECE);
 
+        HashSet<int> rowsCleared = new HashSet<int>();
+
         for (int y = 1; y < height - 1; y++)
         {
-            bool thisRowCleared = false;
-
             IEnumerable<KeyValuePair<Vector2Int, TetrimoPart>> placePieceInLine = _placedPieces.Where(item => item.Key.y == y && _grid[item.Key.x, item.Key.y] == STATIC_PIECE);
             if (placePieceInLine.Count() == (width - 2))
             {
@@ -150,16 +150,18 @@ public class PlayArea : MonoBehaviour
                     _grid[piece.Key.x, piece.Key.y] = EMPTY;
                 }
 
-                thisRowCleared = true;
-
-                GameState.Instance.CheckTetrimosIntegrity();
+                rowsCleared.Add(y);
             }
+        }
 
-            if (thisRowCleared)
-            {
-                GameState.Instance.ControlledRain(y);
-                y--;
-            }
+        if (rowsCleared.Count > 0)
+        {
+            GameState.Instance.CheckTetrimosIntegrity();
+        }
+
+        foreach (int row in rowsCleared)
+        {
+            GameState.Instance.ControlledRain(row);
         }
     }
 

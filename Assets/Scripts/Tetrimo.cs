@@ -21,7 +21,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 
     float _distanceToColision = float.MaxValue;
 
-    public PlayArea PlayArea { get; set; }
+    public PlayArea PlayArea => GameState.Instance.PlayArea;
 
     public Action OnStopped;
 

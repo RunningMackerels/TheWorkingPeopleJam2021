@@ -12,6 +12,8 @@ public class Spawner : MonoBehaviour
     [SerializeField]
     private Tetrimo _nextPiece = null;
 
+    private int _pieceID = 0;
+
     private void Awake()
     {
         PrepareNextPierce();
@@ -20,10 +22,11 @@ public class Spawner : MonoBehaviour
     private void SpawnPiece()
     {
         Tetrimo spawnedPiece = Instantiate(_nextPiece, transform.position, transform.rotation, _playArea.transform);
-        spawnedPiece.PlayArea = _playArea;
+        spawnedPiece.name = _pieceID.ToString() + "_" + _nextPiece.name;
 
         GameState.Instance.InstancedTetrimos.Add(spawnedPiece);
 
+        _pieceID++;
         PrepareNextPierce();
     }
 
