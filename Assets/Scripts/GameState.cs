@@ -64,9 +64,7 @@ public class GameState : MonoBehaviour
 
     private int _currentTetrimoFalling = -1;
 
-    private Stage _stage = Stage.Playing;
-
-    public Stage CurrentStage { get => _stage; set => _stage = value; }
+    public Stage CurrentStage { get; set; } = Stage.Playing;
 
 
     [SerializeField]

@@ -61,12 +61,12 @@ public class PlayArea : MonoBehaviour
         }
         for (int x = 0; x < width; x++)
         {
-            _grid[x, 0] = 3;
+            _grid[x, 0] = BORDER;
             _grid[x, height - 1] = BORDER;
         }
         for (int y = 0; y < height; y++)
         {
-            _grid[0, y] = 3;
+            _grid[0, y] = BORDER;
             _grid[width - 1, y] = BORDER;
         }
     }
@@ -78,6 +78,7 @@ public class PlayArea : MonoBehaviour
         Vector2Int originGrid = PositionToGrid(origin);
         Vector2 originGridCenter = GridCenter(originGrid);
 
+        Debug.Log(direction);
         int gridDistance = DistanceToNextOccupiedGrid(originGrid, direction);
 
         Vector2 originToCenterOrigin = origin - originGridCenter;
@@ -125,7 +126,7 @@ public class PlayArea : MonoBehaviour
 
     public Vector2 GridCenter(Vector2Int gridPosition)
     {
-        return _BottomLeftCorner + new Vector2(gridPosition.x, gridPosition.y) * cellSize + Vector2.one * 0.5f * cellSize;
+        return _BottomLeftCorner + new Vector2(gridPosition.x, gridPosition.y) * cellSize + Vector2.one * (0.5f * cellSize);
     }
 
     public Vector3 Behave(Vector3 origin)
@@ -144,7 +145,8 @@ public class PlayArea : MonoBehaviour
 
         for (int y = 1; y < height - 1; y++)
         {
-            IEnumerable<KeyValuePair<Vector2Int, TetrimoPart>> placePieceInLine = _placedPieces.Where(item => item.Key.y == y && _grid[item.Key.x, item.Key.y] == STATIC_PIECE);
+            IEnumerable<KeyValuePair<Vector2Int, TetrimoPart>> placePieceInLine = 
+                _placedPieces.Where(item => item.Key.y == y && _grid[item.Key.x, item.Key.y] == STATIC_PIECE);
             if (placePieceInLine.Count() == (width - 2))
             {
                 foreach (KeyValuePair<Vector2Int, TetrimoPart> piece in placePieceInLine)
@@ -174,25 +176,48 @@ public class PlayArea : MonoBehaviour
     {
         GameState.Instance.ReverseDirection();
         GameState.Instance.CurrentStage = GameState.Stage.Reversing;
+        ReversingPlayArea();
     }
 
     private void ReversingPlayArea()
     {
-        var selectionOrder =
-            _placedPieces.OrderBy(tetrimo => tetrimo.Key.y).Select(tetrimo => tetrimo.Value.ParentTetrimo).Distinct();
-        IEnumerable<Tetrimo> orderedTetrimos = GameState.Instance.Direction == Vector2Int.down ? selectionOrder.Reverse() : selectionOrder;
-
-        foreach (Tetrimo t in orderedTetrimos)
+        if (_placedPieces.Count == 0)
         {
-            var distance = CalculateDistanceToEnd(t.Parts);
-            Debug.Log(t.gameObject.name + ": " + distance);
-
-            if (distance > 0)
-            {
-                t.MakeItFall();
-                _reversingTetrimos.Add(t);
-            }
+            return;
         }
+        
+        /*
+        var selectionOrder =
+            _placedPieces
+                .Select(tetrimo => tetrimo.Value.ParentTetrimo)
+                .Distinct()
+                .ToList();
+        selectionOrder.Sort();
+        */
+        /*
+                OrderBy(tetrimo => tetrimo.Key.y)
+                .Select(tetrimo => tetrimo.Value.ParentTetrimo)
+                .Distinct();
+        */
+        /*
+        IEnumerable<Tetrimo> orderedTetrimos =
+            GameState.Instance.Direction == Vector2Int.down ? selectionOrder.Reverse() : selectionOrder;        
+        */
+
+        var selectionOrder = GameState.Instance.InstancedTetrimos;
+        selectionOrder.Sort();
+        
+        if (GameState.Instance.DirectionGrid == Vector2Int.down)
+        {
+            selectionOrder.Reverse();
+        }
+
+        foreach (Tetrimo t in selectionOrder)
+        {
+            t.MakeItFall();
+        }
+        
+        //Debug.Log("reversing: " + _reversingTetrimos.Count);
     }
 
 
@@ -204,7 +229,11 @@ public class PlayArea : MonoBehaviour
         foreach (TetrimoPart part in parts)
         {
             float distance = GetDistanceToCollision(part.transform.position, GameState.Instance.DirectionGrid);
-
+            
+#if UNITY_EDITOR
+            Vector2 position = part.transform.position;
+            Debug.DrawLine(position, position + GameState.Instance.DirectionGrid, Color.red);
+#endif
             if (distance < distanceToColision)
             {
                 distanceToColision = distance;
@@ -224,7 +253,12 @@ public class PlayArea : MonoBehaviour
         {
             Vector2Int gridID = PositionToGrid(part.transform.position);
             _grid[gridID.x, gridID.y] = type;
-            _placedPieces[gridID] = type == EMPTY ? null : part;
+            _placedPieces[gridID] = part;
+
+            if (type == EMPTY)
+            {
+                _placedPieces.Remove(gridID);
+            }
         }
     }
 
@@ -314,19 +348,17 @@ public class PlayArea : MonoBehaviour
 
     private void Update()
     {
-
+        /*
         if(GameState.Instance.CurrentStage == GameState.Stage.Reversing)
         {
             KeepRevertingUntilStop();
         }
-
-
-
+        */
+        
 #if UNITY_EDITOR
         if (Input.GetKeyUp(KeyCode.R))
         {
-           
-            ReversingPlayArea();
+            FlipIt();
         }
 #endif
     }

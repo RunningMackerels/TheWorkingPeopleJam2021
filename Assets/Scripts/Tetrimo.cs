@@ -61,6 +61,10 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
             case State.Dropping:
                 speedMultiplier = config.DropMultiplier;
                 break;
+            
+            case State.Falling:
+                CalculateEndPosition();
+                break;
         }
 
         
@@ -250,6 +254,4 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
             return -1;
         }
     }
-
-    
 }
