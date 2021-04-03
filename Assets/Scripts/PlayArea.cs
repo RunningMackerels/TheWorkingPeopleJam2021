@@ -160,14 +160,13 @@ public class PlayArea : MonoBehaviour
         if (rowsCleared.Count > 0)
         {
             GameState.Instance.CheckTetrimosIntegrity();
+            GameState.Instance.AddScore(rowsCleared.Count);
         }
 
         foreach (int row in rowsCleared)
         {
             GameState.Instance.ControlledRain(row);
         }
-
-        GameState.Instance.AddScore(rowsCleared.Count);
     }
 
 
