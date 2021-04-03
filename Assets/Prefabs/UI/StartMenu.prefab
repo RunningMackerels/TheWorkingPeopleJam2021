@@ -248,6 +248,18 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2872062457125098299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8258461549144068994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b7a8917a40702b42823b47efabae7c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8523591240177615140
 GameObject:
   m_ObjectHideFlags: 0
@@ -448,6 +460,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1875143911124032089, guid: 86195ea45dd4e4546a8b9ee43a0aab51, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1875143911124032089, guid: 86195ea45dd4e4546a8b9ee43a0aab51, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2872062457125098299}
+    - target: {fileID: 1875143911124032089, guid: 86195ea45dd4e4546a8b9ee43a0aab51, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LoadScene
+      objectReference: {fileID: 0}
+    - target: {fileID: 1875143911124032089, guid: 86195ea45dd4e4546a8b9ee43a0aab51, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LoadSceneButton, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1875143911124032089, guid: 86195ea45dd4e4546a8b9ee43a0aab51, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Credits
+      objectReference: {fileID: 0}
     - target: {fileID: 2931134489794816401, guid: 86195ea45dd4e4546a8b9ee43a0aab51, type: 3}
       propertyPath: m_Name
       value: Credits
@@ -462,6 +494,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 86195ea45dd4e4546a8b9ee43a0aab51, type: 3}
+--- !u!1 &8258461549144068994 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2931134489794816401, guid: 86195ea45dd4e4546a8b9ee43a0aab51, type: 3}
+  m_PrefabInstance: {fileID: 6500532989182212627}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &6766326692852380649 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 563048947709135354, guid: 86195ea45dd4e4546a8b9ee43a0aab51, type: 3}
