@@ -138,6 +138,9 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
             }
         }
 
+        //remove floating point errors
+        distanceToColision = Mathf.Round(distanceToColision);
+
         if (distanceToColision > 0)
         {
             transform.Translate(direction * PlayArea.CellSize, Space.World);
