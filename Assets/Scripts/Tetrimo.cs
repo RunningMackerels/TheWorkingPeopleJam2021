@@ -245,6 +245,12 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         _state = State.Falling;
     }
 
+    public void Fall()
+    {
+        CalculateEndPosition();
+        _state = State.Falling;
+    }
+
     public int CompareTo(Tetrimo other)
     {
         HashSet<Tetrimo> adjacent = GameState.Instance.PlayArea.GetAdjacentPieces(Parts, GameState.Instance.DirectionGrid);

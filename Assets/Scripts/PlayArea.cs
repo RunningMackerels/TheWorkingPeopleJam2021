@@ -20,6 +20,9 @@ public class PlayArea : MonoBehaviour
     [SerializeField]
     private float cellSize = 1f;
 
+    [SerializeField] 
+    private float timeBetweenFalls = 0.5f;
+    
     /// <summary>
     /// 0 - empty
     /// 1 - moving piece
@@ -37,16 +40,21 @@ public class PlayArea : MonoBehaviour
     public float CellSize => cellSize;
 
     private Dictionary<Vector2Int, TetrimoPart> _placedPieces = new Dictionary<Vector2Int, TetrimoPart>();
+    
     private List<Tetrimo> _reversingTetrimos = new List<Tetrimo>();
-
+    private int _reversingIndex = 0;
+    private float _timePassedForNextReverse = 0;
+    
     private void Awake()
     {
         InitializeGrid();
+        ResetTime();
     }
 
     private void OnValidate()
     {
         InitializeGrid();
+        ResetTime();
     }
 
     public void InitializeGrid()
@@ -69,6 +77,11 @@ public class PlayArea : MonoBehaviour
             _grid[0, y] = BORDER;
             _grid[width - 1, y] = BORDER;
         }
+    }
+
+    public void ResetTime()
+    {
+        _timePassedForNextReverse = timeBetweenFalls;
     }
 
     public float GetDistanceToCollision(Vector2 origin, Vector2Int direction)
@@ -181,28 +194,6 @@ public class PlayArea : MonoBehaviour
 
     private void ReversingPlayArea()
     {
-        if (_placedPieces.Count == 0)
-        {
-            return;
-        }
-        
-        /*
-        var selectionOrder =
-            _placedPieces
-                .Select(tetrimo => tetrimo.Value.ParentTetrimo)
-                .Distinct()
-                .ToList();
-        selectionOrder.Sort();
-        */
-        /*
-                OrderBy(tetrimo => tetrimo.Key.y)
-                .Select(tetrimo => tetrimo.Value.ParentTetrimo)
-                .Distinct();
-        */
-        /*
-        IEnumerable<Tetrimo> orderedTetrimos =
-            GameState.Instance.Direction == Vector2Int.down ? selectionOrder.Reverse() : selectionOrder;        
-        */
 
         var selectionOrder = GameState.Instance.InstancedTetrimos;
         selectionOrder.Sort();
@@ -214,10 +205,10 @@ public class PlayArea : MonoBehaviour
 
         foreach (Tetrimo t in selectionOrder)
         {
-            t.MakeItFall();
+            RemoveStatic(t.Parts);
         }
         
-        //Debug.Log("reversing: " + _reversingTetrimos.Count);
+        _reversingTetrimos.AddRange(selectionOrder);
     }
 
 
@@ -330,30 +321,29 @@ public class PlayArea : MonoBehaviour
 
     private void KeepRevertingUntilStop()
     {
-        ReversingPlayArea();
-        List<Tetrimo> toRemove = new List<Tetrimo>();
-
-        foreach (Tetrimo reversed in _reversingTetrimos)
+        _timePassedForNextReverse += Time.deltaTime;
+        if (_reversingIndex < _reversingTetrimos.Count && _timePassedForNextReverse >= timeBetweenFalls)
         {
-            if(reversed.IsStopped)
-            {
-                toRemove.Add(reversed);
-            }
+            _reversingTetrimos[_reversingIndex].Fall();
+            _timePassedForNextReverse -= timeBetweenFalls;
+            _reversingIndex++;
         }
-        foreach(Tetrimo removed in toRemove)
+
+        if (_reversingIndex < _reversingTetrimos.Count) return;
+        
+        if (_reversingTetrimos[_reversingIndex - 1].IsStopped)
         {
-            _reversingTetrimos.Remove(removed);
+            GameState.Instance.CurrentStage = GameState.Stage.Playing;
         }
     }
 
     private void Update()
     {
-        /*
+        
         if(GameState.Instance.CurrentStage == GameState.Stage.Reversing)
         {
             KeepRevertingUntilStop();
         }
-        */
         
 #if UNITY_EDITOR
         if (Input.GetKeyUp(KeyCode.R))
