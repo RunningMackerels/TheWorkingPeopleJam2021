@@ -349,7 +349,6 @@ public class PlayArea : MonoBehaviour
 
     private void Update()
     {
-        
         if(GameState.Instance.CurrentStage == GameState.Stage.Reversing)
         {
             KeepRevertingUntilStop();

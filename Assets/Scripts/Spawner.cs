@@ -51,7 +51,12 @@ public class Spawner : MonoBehaviour
 
         if (GameState.Instance.CurrentStage == GameState.Stage.Playing)
         {
-            SpawnPiece();
+#if UNITY_EDITOR
+            if (GameState.Instance.Config.AutomaticSpawn)
+#endif
+            {
+                SpawnPiece();
+            }
         }
     }
 
