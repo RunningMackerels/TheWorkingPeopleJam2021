@@ -335,6 +335,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playArea: {fileID: 655511223}
+  spawner: {fileID: 1629249442}
   InstancedTetrimos: []
   scoreWeights:
   - NumberOfLines: 1
