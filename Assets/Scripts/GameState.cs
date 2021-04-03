@@ -58,6 +58,9 @@ public class GameState : MonoBehaviour
     [SerializeField]
     private PlayArea playArea = null;
 
+    [SerializeField]
+    private Spawner spawner = null;
+
     public PlayArea PlayArea => playArea;
 
     public List<Tetrimo> InstancedTetrimos = new List<Tetrimo>();
@@ -84,8 +87,15 @@ public class GameState : MonoBehaviour
         {
             _instance = this;
         }
+    }
 
+    private void Start()
+    {
         _score = 0;
+
+        PlayArea.InitializeGrid();
+
+        spawner.SpawnPiece();
     }
 
     public void ClearBoard()
@@ -161,4 +171,8 @@ public class GameState : MonoBehaviour
         _score += scoreWeights.FirstOrDefault(s => s.NumberOfLines == numberOfLines).Score;
     }
 
+    public void GameOver()
+    {
+        
+    }
 }

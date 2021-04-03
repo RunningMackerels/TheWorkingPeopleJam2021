@@ -73,7 +73,6 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
             _distanceToColision = 0;
 
             _state = State.Stopped;
-            OnStopped?.Invoke();
             PlayArea.PlacePieces(Parts);
         }
         else
@@ -82,6 +81,11 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         }
 
         transform.Translate(GameState.Instance.Direction * distance, Space.World);
+
+        if (_distanceToColision == 0)
+        {
+            OnStopped?.Invoke();
+        }
     }
 
     private bool CheckAndMoveSides()

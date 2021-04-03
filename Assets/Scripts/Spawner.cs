@@ -14,40 +14,44 @@ public class Spawner : MonoBehaviour
 
     private int _pieceID = 0;
 
+    private Tetrimo _currentPiece = null;
+
     private void Awake()
     {
         PrepareNextPierce();
     }
 
-    private void SpawnPiece()
+    public void SpawnPiece()
     {
         Tetrimo spawnedPiece = Instantiate(_nextPiece, transform.position, transform.rotation, _playArea.transform);
         spawnedPiece.name = _pieceID.ToString() + "_" + _nextPiece.name;
 
+        if (GameState.Instance.PlayArea.CheckInterception(spawnedPiece.Parts))
+        {
+            GameState.Instance.GameOver();
+            return;
+        }
+
         GameState.Instance.InstancedTetrimos.Add(spawnedPiece);
+
+        _currentPiece = spawnedPiece;
+        _currentPiece.OnStopped += HandleCurrentPieceStopped;
 
         _pieceID++;
         PrepareNextPierce();
+    }
+
+    private void HandleCurrentPieceStopped()
+    {
+        _currentPiece.OnStopped -= HandleCurrentPieceStopped;
+        _currentPiece = null;
+
+        SpawnPiece();
     }
 
     private void PrepareNextPierce()
     {
         int pieceIdx = Mathf.RoundToInt(Random.Range(0, tetrimosPrefabs.Count));
         _nextPiece = tetrimosPrefabs[pieceIdx];
-    }
-
-   
-    private void Update()
-    {
-#if UNITY_EDITOR
-        if (Input.GetKeyUp(KeyCode.S))
-        {
-            SpawnPiece();
-        }
-        if (Input.GetKeyUp(KeyCode.C))
-        {
-            GameState.Instance.ClearBoard();
-        }
-#endif
     }
 }
