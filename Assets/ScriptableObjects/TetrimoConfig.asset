@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: TetrimoConfig
   m_EditorClassIdentifier: 
   VerticalSpeed: 5
+  VerticalBoost: 4
+  DropMultiplier: 15

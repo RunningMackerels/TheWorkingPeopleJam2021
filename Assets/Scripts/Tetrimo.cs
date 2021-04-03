@@ -10,6 +10,8 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         Stopped,
         Interactable,
         Falling,
+        Dropping,
+        Size
     }
 
     [SerializeField]
@@ -22,6 +24,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
     float _distanceToColision = float.MaxValue;
 
     public PlayArea PlayArea => GameState.Instance.PlayArea;
+    public bool IsStopped => _state == State.Stopped;
 
     public Action OnStopped;
 
@@ -43,17 +46,25 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 
         float speedMultiplier = 1f;
 
-        if (_state == State.Interactable)
+        switch(_state)
         {
-            if (!CheckAndMoveSides())
-            {
-                CheckAndRotate();
-            }
+            case State.Interactable:
 
-            speedMultiplier = -Mathf.Clamp(Input.GetAxis("Vertical"), -1f, 0f) * config.VerticalBoost;
+                if (!CheckAndMoveSides())
+                {
+                    CheckAndRotate();
+                }
+                CheckAndDrop();
+                speedMultiplier = -Mathf.Clamp(Input.GetAxis("Vertical"), -1f, 0f) * config.VerticalBoost;
+                break;
+
+            case State.Dropping:
+                speedMultiplier = config.DropMultiplier;
+                break;
         }
 
-        float distance = Time.deltaTime * (config.VerticalSpeed + speedMultiplier);
+        
+        float distance = Time.deltaTime * (config.VerticalSpeed + speedMultiplier * config.VerticalBoost);
 
         
         if (distance > _distanceToColision)
@@ -71,12 +82,6 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         }
 
         transform.Translate(GameState.Instance.Direction * distance, Space.World);
-
-        //it is triggering an assert when falling, and it is not really necessary
-        //if (_state == State.Stopped)
-        //{
-        //    transform.position = PlayArea.Behave(transform.position);
-        //}
     }
 
     private bool CheckAndMoveSides()
@@ -100,6 +105,15 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             Rotate(-90f);
+        }
+    }
+
+
+    private void CheckAndDrop()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            _state = State.Dropping;
         }
     }
 
@@ -236,4 +250,6 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
             return -1;
         }
     }
+
+    
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayArea : MonoBehaviour
 {
+
+
     public const int EMPTY = 0;
     public const int MOVING_PIECE = 1;
     public const int STATIC_PIECE = 2;
@@ -12,7 +14,7 @@ public class PlayArea : MonoBehaviour
     [SerializeField, Range(0f, 50f)]
     private int width = 20;
 
-    [SerializeField, Range(0f, 50f)]    
+    [SerializeField, Range(0f, 50f)]
     private int height = 50;
 
     [SerializeField]
@@ -35,6 +37,7 @@ public class PlayArea : MonoBehaviour
     public float CellSize => cellSize;
 
     private Dictionary<Vector2Int, TetrimoPart> _placedPieces = new Dictionary<Vector2Int, TetrimoPart>();
+    private List<Tetrimo> _reversingTetrimos = new List<Tetrimo>();
 
     private void Awake()
     {
@@ -86,14 +89,14 @@ public class PlayArea : MonoBehaviour
     private int DistanceToNextOccupiedGrid(Vector2Int gridOriginIdx, Vector2Int directionNormalized)
     {
         int distance = 0;
-        while(_grid[gridOriginIdx.x + directionNormalized.x, gridOriginIdx.y + directionNormalized.y] == EMPTY)
+        while (_grid[gridOriginIdx.x + directionNormalized.x, gridOriginIdx.y + directionNormalized.y] == EMPTY)
         {
             distance++;
             gridOriginIdx += directionNormalized;
         }
         return distance;
     }
-    
+
     public Vector2Int PositionToGrid(Vector2 position)
     {
         Debug.Assert(position.x >= _BottomLeftCorner.x + cellSize * 0.5f &&
@@ -102,13 +105,13 @@ public class PlayArea : MonoBehaviour
                      position.y <= _TopRightCorner.y - cellSize * 0.5f);
 
         Vector2 relativePosition = position - _BottomLeftCorner;
-        
+
         return new Vector2Int((int)relativePosition.x / (int)cellSize, (int)relativePosition.y / (int)cellSize);
     }
 
     public bool CheckInterception(List<TetrimoPart> parts)
     {
-        foreach(TetrimoPart part in parts)
+        foreach (TetrimoPart part in parts)
         {
             Vector2Int gridID = PositionToGrid(part.transform.position);
             if (_grid[gridID.x, gridID.y] > EMPTY)
@@ -144,7 +147,7 @@ public class PlayArea : MonoBehaviour
             IEnumerable<KeyValuePair<Vector2Int, TetrimoPart>> placePieceInLine = _placedPieces.Where(item => item.Key.y == y && _grid[item.Key.x, item.Key.y] == STATIC_PIECE);
             if (placePieceInLine.Count() == (width - 2))
             {
-                foreach(KeyValuePair<Vector2Int, TetrimoPart> piece in placePieceInLine)
+                foreach (KeyValuePair<Vector2Int, TetrimoPart> piece in placePieceInLine)
                 {
                     piece.Value.Remove();
                     _grid[piece.Key.x, piece.Key.y] = EMPTY;
@@ -165,6 +168,50 @@ public class PlayArea : MonoBehaviour
         }
     }
 
+
+    public void FlipIt()
+    {
+        GameState.Instance.ReverseDirection();
+        GameState.Instance.CurrentStage = GameState.Stage.Reversing;
+    }
+
+    private void ReversingPlayArea()
+    {
+        var selectionOrder =
+            _placedPieces.OrderBy(tetrimo => tetrimo.Key.y).Select(tetrimo => tetrimo.Value.ParentTetrimo).Distinct();
+        IEnumerable<Tetrimo> orderedTetrimos = GameState.Instance.Direction == Vector2Int.down ? selectionOrder.Reverse() : selectionOrder;
+
+        foreach (Tetrimo t in orderedTetrimos)
+        {
+            var distance = CalculateDistanceToEnd(t.Parts);
+            Debug.Log(t.gameObject.name + ": " + distance);
+
+            if (distance > 0)
+            {
+                t.MakeItFall();
+                _reversingTetrimos.Add(t);
+            }
+        }
+    }
+
+
+    //Yes, I know it is repeated, but we need some refactoring
+    private float CalculateDistanceToEnd(List<TetrimoPart> parts)
+    {
+        float distanceToColision = float.MaxValue;
+
+        foreach (TetrimoPart part in parts)
+        {
+            float distance = GetDistanceToCollision(part.transform.position, GameState.Instance.DirectionGrid);
+
+            if (distance < distanceToColision)
+            {
+                distanceToColision = distance;
+            }
+        }
+        return distanceToColision;
+    }
+
     public void RemoveStatic(List<TetrimoPart> parts)
     {
         AssignType(parts, EMPTY);
@@ -176,7 +223,7 @@ public class PlayArea : MonoBehaviour
         {
             Vector2Int gridID = PositionToGrid(part.transform.position);
             _grid[gridID.x, gridID.y] = type;
-            _placedPieces[gridID] = part;
+            _placedPieces[gridID] = type == EMPTY ? null : part;
         }
     }
 
@@ -208,6 +255,7 @@ public class PlayArea : MonoBehaviour
 
         return adjacent;
     }
+
 
     private void OnDrawGizmos()
     {
@@ -243,4 +291,43 @@ public class PlayArea : MonoBehaviour
         Gizmos.color = Color.white;
         Gizmos.DrawLine(_BottomLeftCorner, _TopRightCorner);
     }
+
+
+    private void KeepRevertingUntilStop()
+    {
+        ReversingPlayArea();
+        List<Tetrimo> toRemove = new List<Tetrimo>();
+
+        foreach (Tetrimo reversed in _reversingTetrimos)
+        {
+            if(reversed.IsStopped)
+            {
+                toRemove.Add(reversed);
+            }
+        }
+        foreach(Tetrimo removed in toRemove)
+        {
+            _reversingTetrimos.Remove(removed);
+        }
+    }
+
+    private void Update()
+    {
+
+        if(GameState.Instance.CurrentStage == GameState.Stage.Reversing)
+        {
+            KeepRevertingUntilStop();
+        }
+
+
+
+#if UNITY_EDITOR
+        if (Input.GetKeyUp(KeyCode.R))
+        {
+           
+            ReversingPlayArea();
+        }
+#endif
+    }
+
 }

@@ -5,6 +5,14 @@ using UnityEngine;
 
 public class GameState : MonoBehaviour
 {
+    public enum Stage
+    {
+        Playing,
+        Reversing,
+        Size
+    }
+
+
     private static GameState _instance;
 
     private Vector2Int _direction = Vector2Int.down;
@@ -50,6 +58,11 @@ public class GameState : MonoBehaviour
     public List<Tetrimo> InstancedTetrimos = new List<Tetrimo>();
 
     private int _currentTetrimoFalling = -1;
+
+    private Stage _stage = Stage.Playing;
+
+    public Stage CurrentStage { get => _stage; set => _stage = value; }
+
 
     private void Awake()
     {
@@ -125,4 +138,10 @@ public class GameState : MonoBehaviour
             }
         }
     }
+
+    public void ReverseDirection()
+    {
+        _direction *= Vector2Int.down;
+    }
+
 }
