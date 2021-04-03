@@ -1,10 +1,17 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class GameState : MonoBehaviour
 {
+    [Serializable]
+    private class ScoreWeight
+    {
+        public int NumberOfLines;
+        public int Score = 10;
+    }
+
     private static GameState _instance;
 
     private Vector2Int _direction = Vector2Int.down;
@@ -51,6 +58,11 @@ public class GameState : MonoBehaviour
 
     private int _currentTetrimoFalling = -1;
 
+    [SerializeField]
+    private ScoreWeight[] scoreWeights;
+
+    private int _score = 0;
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -61,6 +73,8 @@ public class GameState : MonoBehaviour
         {
             _instance = this;
         }
+
+        _score = 0;
     }
 
     public void ClearBoard()
@@ -124,5 +138,10 @@ public class GameState : MonoBehaviour
                 playArea.AssignType(piece.Parts, PlayArea.STATIC_PIECE);
             }
         }
+    }
+
+    public void AddScore(int numberOfLines)
+    {
+        _score += scoreWeights.FirstOrDefault(s => s.NumberOfLines == numberOfLines).Score;
     }
 }

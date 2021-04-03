@@ -336,6 +336,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playArea: {fileID: 655511223}
   InstancedTetrimos: []
+  scoreWeights:
+  - NumberOfLines: 1
+    Score: 10
+  - NumberOfLines: 2
+    Score: 30
+  - NumberOfLines: 3
+    Score: 50
+  - NumberOfLines: 4
+    Score: 100
 --- !u!4 &1738472656
 Transform:
   m_ObjectHideFlags: 0

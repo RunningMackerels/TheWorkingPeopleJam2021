@@ -163,6 +163,8 @@ public class PlayArea : MonoBehaviour
         {
             GameState.Instance.ControlledRain(row);
         }
+
+        GameState.Instance.AddScore(rowsCleared.Count);
     }
 
     public void RemoveStatic(List<TetrimoPart> parts)
