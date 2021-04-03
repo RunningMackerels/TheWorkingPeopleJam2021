@@ -11,6 +11,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         Interactable,
         Falling,
         Dropping,
+        Reverting,
         Size
     }
 
@@ -26,7 +27,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
     public PlayArea PlayArea => GameState.Instance.PlayArea;
     public bool IsStopped => _state == State.Stopped;
 
-    public Action OnStopped;
+    public Action<Tetrimo> OnStopped;
 
     private void Start()
     {
@@ -62,8 +63,8 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
                 speedMultiplier = config.DropMultiplier;
                 break;
             
-            case State.Falling:
-                CalculateEndPosition();
+            case State.Reverting:
+                speedMultiplier = config.DropMultiplier * 2.0f;
                 break;
         }
 
@@ -77,7 +78,6 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
             _distanceToColision = 0;
 
             _state = State.Stopped;
-            PlayArea.PlacePieces(Parts);
         }
         else
         {
@@ -86,9 +86,10 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 
         transform.Translate(GameState.Instance.Direction * distance, Space.World);
 
-        if (_distanceToColision == 0)
+        if (_state == State.Stopped)
         {
-            OnStopped?.Invoke();
+            PlayArea.PlacePieces(Parts);
+            OnStopped?.Invoke(this);
         }
     }
 
@@ -161,7 +162,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         CalculateEndPosition();
     }
 
-    private void CalculateEndPosition()
+    public void CalculateEndPosition()
     {
         _distanceToColision = float.MaxValue;
 
@@ -174,6 +175,10 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
                 _distanceToColision = distance;
             }
         }
+
+        _distanceToColision = _distanceToColision >= 0 ? _distanceToColision : 0;
+        
+        Debug.Log("Distance: " + _distanceToColision + " | Direction: " + GameState.Instance.DirectionGrid.y);
     }
 
     public void RemovePart(TetrimoPart tetrimoPart)
@@ -248,10 +253,10 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         _state = State.Falling;
     }
 
-    public void Fall()
+    public void Revert()
     {
         CalculateEndPosition();
-        _state = State.Falling;
+        _state = State.Reverting;
     }
 
     public int CompareTo(Tetrimo other)

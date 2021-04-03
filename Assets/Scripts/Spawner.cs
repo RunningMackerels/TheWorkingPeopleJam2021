@@ -41,7 +41,7 @@ public class Spawner : MonoBehaviour
         PrepareNextPierce();
     }
 
-    private void HandleCurrentPieceStopped()
+    private void HandleCurrentPieceStopped(Tetrimo tetrimo)
     {
         _currentPiece.OnStopped -= HandleCurrentPieceStopped;
         _currentPiece = null;

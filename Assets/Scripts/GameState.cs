@@ -130,10 +130,10 @@ public class GameState : MonoBehaviour
         InstancedTetrimos.Sort();
 
         _currentTetrimoFalling = -1;
-        MakeOneFall();
+        MakeOneFall(null);
     }
 
-    private void MakeOneFall()
+    private void MakeOneFall(Tetrimo tetrimo)
     {
         if (_currentTetrimoFalling >= 0)
         {

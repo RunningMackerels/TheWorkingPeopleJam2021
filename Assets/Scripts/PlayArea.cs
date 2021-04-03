@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 public class PlayArea : MonoBehaviour
@@ -44,17 +45,18 @@ public class PlayArea : MonoBehaviour
     private List<Tetrimo> _reversingTetrimos = new List<Tetrimo>();
     private int _reversingIndex = 0;
     private float _timePassedForNextReverse = 0;
+    private bool _fallingIsDirty = false;
     
     private void Awake()
     {
         InitializeGrid();
-        ResetTime();
+        ResetFalling();
     }
 
     private void OnValidate()
     {
         InitializeGrid();
-        ResetTime();
+        ResetFalling();
     }
 
     public void InitializeGrid()
@@ -79,9 +81,12 @@ public class PlayArea : MonoBehaviour
         }
     }
 
-    public void ResetTime()
+    public void ResetFalling()
     {
         _timePassedForNextReverse = timeBetweenFalls;
+        _reversingIndex = 0;
+        _reversingTetrimos.Clear();
+        _fallingIsDirty = false;
     }
 
     public float GetDistanceToCollision(Vector2 origin, Vector2Int direction)
@@ -202,43 +207,24 @@ public class PlayArea : MonoBehaviour
 
     private void ReversingPlayArea()
     {
+        ResetFalling();
 
         var selectionOrder = GameState.Instance.InstancedTetrimos;
         selectionOrder.Sort();
         
-        if (GameState.Instance.DirectionGrid == Vector2Int.down)
-        {
-            selectionOrder.Reverse();
-        }
-
         foreach (Tetrimo t in selectionOrder)
         {
             RemoveStatic(t.Parts);
+            t.OnStopped += OnPieceStopped;
         }
         
         _reversingTetrimos.AddRange(selectionOrder);
     }
 
-
-    //Yes, I know it is repeated, but we need some refactoring
-    private float CalculateDistanceToEnd(List<TetrimoPart> parts)
+    private void OnPieceStopped(Tetrimo tetrimo)
     {
-        float distanceToColision = float.MaxValue;
-
-        foreach (TetrimoPart part in parts)
-        {
-            float distance = GetDistanceToCollision(part.transform.position, GameState.Instance.DirectionGrid);
-            
-#if UNITY_EDITOR
-            Vector2 position = part.transform.position;
-            Debug.DrawLine(position, position + GameState.Instance.DirectionGrid, Color.red);
-#endif
-            if (distance < distanceToColision)
-            {
-                distanceToColision = distance;
-            }
-        }
-        return distanceToColision;
+        tetrimo.OnStopped -= OnPieceStopped;
+        _fallingIsDirty = true;
     }
 
     public void RemoveStatic(List<TetrimoPart> parts)
@@ -329,10 +315,23 @@ public class PlayArea : MonoBehaviour
 
     private void KeepRevertingUntilStop()
     {
+        if (_reversingTetrimos.Count == 0)
+        {
+            GameState.Instance.CurrentStage = GameState.Stage.Playing;
+            ResetFalling();
+            return;
+        }
+
+        if (_fallingIsDirty)
+        {
+            _reversingTetrimos.ForEach(t => t.CalculateEndPosition());
+            _fallingIsDirty = false;
+        }
+        
         _timePassedForNextReverse += Time.deltaTime;
         if (_reversingIndex < _reversingTetrimos.Count && _timePassedForNextReverse >= timeBetweenFalls)
         {
-            _reversingTetrimos[_reversingIndex].Fall();
+            _reversingTetrimos[_reversingIndex].Revert();
             _timePassedForNextReverse -= timeBetweenFalls;
             _reversingIndex++;
         }
@@ -342,6 +341,7 @@ public class PlayArea : MonoBehaviour
         if (_reversingTetrimos[_reversingIndex - 1].IsStopped)
         {
             GameState.Instance.CurrentStage = GameState.Stage.Playing;
+            ResetFalling();
         }
     }
 

@@ -238,6 +238,7 @@ MonoBehaviour:
   width: 9
   height: 22
   cellSize: 1
+  timeBetweenFalls: 0.5
 --- !u!4 &655511224
 Transform:
   m_ObjectHideFlags: 0
@@ -346,6 +347,7 @@ MonoBehaviour:
     Score: 50
   - NumberOfLines: 4
     Score: 100
+  config: {fileID: 11400000, guid: b7c7129f048ef49ceabfbecd357440d2, type: 2}
 --- !u!4 &1738472656
 Transform:
   m_ObjectHideFlags: 0
