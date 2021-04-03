@@ -114,7 +114,15 @@ public class PlayArea : MonoBehaviour
     {
         foreach (TetrimoPart part in parts)
         {
-            Vector2Int gridID = PositionToGrid(part.transform.position);
+            Vector2 positon = part.transform.position;
+            
+            if (positon.x < _BottomLeftCorner.x || positon.y < _BottomLeftCorner.y ||
+                positon.x > _TopRightCorner.x || positon.y > _TopRightCorner.y)
+            {
+                return true;
+            }
+
+            Vector2Int gridID = PositionToGrid(positon);
             if (_grid[gridID.x, gridID.y] > EMPTY)
             {
                 return true;
