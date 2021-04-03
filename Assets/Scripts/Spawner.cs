@@ -23,7 +23,10 @@ public class Spawner : MonoBehaviour
 
     public void SpawnPiece()
     {
-        Tetrimo spawnedPiece = Instantiate(_nextPiece, transform.position, transform.rotation, _playArea.transform);
+        Vector3 spawnPosition = new Vector3(transform.position.x * -1f * GameState.Instance.Direction.x,
+                                            transform.position.y * -1f * GameState.Instance.Direction.y,
+                                            0f);
+        Tetrimo spawnedPiece = Instantiate(_nextPiece, spawnPosition, transform.rotation, _playArea.transform);
         spawnedPiece.name = _pieceID.ToString() + "_" + _nextPiece.name;
 
         if (GameState.Instance.PlayArea.CheckInterception(spawnedPiece.Parts))
@@ -46,7 +49,10 @@ public class Spawner : MonoBehaviour
         _currentPiece.OnStopped -= HandleCurrentPieceStopped;
         _currentPiece = null;
 
-        SpawnPiece();
+        if (GameState.Instance.CurrentStage == GameState.Stage.Playing)
+        {
+            SpawnPiece();
+        }
     }
 
     private void PrepareNextPierce()

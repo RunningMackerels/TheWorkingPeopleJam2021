@@ -70,14 +70,16 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         
         float distance = Time.deltaTime * (config.VerticalSpeed + speedMultiplier * config.VerticalBoost);
 
-        
+
+        int rowsCleared = 0;
+
         if (distance > _distanceToColision)
         {
             distance = _distanceToColision;
             _distanceToColision = 0;
 
             _state = State.Stopped;
-            PlayArea.PlacePieces(Parts);
+            rowsCleared = PlayArea.PlacePieces(Parts);
         }
         else
         {
@@ -85,6 +87,11 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         }
 
         transform.Translate(GameState.Instance.Direction * distance, Space.World);
+
+        if (rowsCleared > 0)
+        {
+            PlayArea.FlipIt();
+        }
 
         if (_distanceToColision == 0)
         {

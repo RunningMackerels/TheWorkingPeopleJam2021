@@ -67,8 +67,26 @@ public class GameState : MonoBehaviour
 
     private int _currentTetrimoFalling = -1;
 
-    public Stage CurrentStage { get; set; } = Stage.Playing;
+    private Stage _currentStage = Stage.Playing;
+    public Stage CurrentStage
+    {
+        get => _currentStage;
+        set
+        {
+            if (_currentStage != value)
+            {
+                _currentStage = value;
 
+                //if we are changing to playing, then spawn a piece
+                if (_currentStage == Stage.Playing)
+                {
+                    spawner.SpawnPiece();
+                }
+            }
+        }
+    }
+
+    public Action<Stage> OnStageChanged;
 
     [SerializeField]
     private ScoreWeight[] scoreWeights;
@@ -93,7 +111,7 @@ public class GameState : MonoBehaviour
 
         PlayArea.InitializeGrid();
 
-        spawner.SpawnPiece();
+        spawner.SpawnPiece();        
     }
 
     public void ClearBoard()
