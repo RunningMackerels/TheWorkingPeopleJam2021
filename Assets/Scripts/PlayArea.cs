@@ -166,6 +166,8 @@ public class PlayArea : MonoBehaviour
         {
             GameState.Instance.ControlledRain(row);
         }
+
+        GameState.Instance.AddScore(rowsCleared.Count);
     }
 
 
