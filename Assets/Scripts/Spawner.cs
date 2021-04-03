@@ -46,7 +46,12 @@ public class Spawner : MonoBehaviour
         _currentPiece.OnStopped -= HandleCurrentPieceStopped;
         _currentPiece = null;
 
-        SpawnPiece();
+#if UNITY_EDITOR
+        if (GameState.Instance.Config.AutomaticSpawn)
+#endif
+        {
+            SpawnPiece();
+        }
     }
 
     private void PrepareNextPierce()

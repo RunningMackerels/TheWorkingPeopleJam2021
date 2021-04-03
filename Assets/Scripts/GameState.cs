@@ -73,6 +73,10 @@ public class GameState : MonoBehaviour
     [SerializeField]
     private ScoreWeight[] scoreWeights;
 
+    [SerializeField] 
+    private GameConfig config = default;
+    public GameConfig Config => config;
+    
     private int _score = 0;
 
     private void Awake()
@@ -93,7 +97,12 @@ public class GameState : MonoBehaviour
 
         PlayArea.InitializeGrid();
 
-        spawner.SpawnPiece();
+#if UNITY_EDITOR
+        if (Config.AutomaticSpawn)
+#endif
+        {
+            spawner.SpawnPiece();
+        }        
     }
 
     public void ClearBoard()
@@ -173,4 +182,14 @@ public class GameState : MonoBehaviour
     {
         
     }
+    
+#if UNITY_EDITOR
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            spawner.SpawnPiece();
+        }
+    }
+#endif    
 }
