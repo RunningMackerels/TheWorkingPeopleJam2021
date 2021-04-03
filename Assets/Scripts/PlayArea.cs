@@ -163,7 +163,7 @@ public class PlayArea : MonoBehaviour
         return originGridCenter;
     }
 
-    public void PlacePieces(List<TetrimoPart> parts)
+    public int PlacePieces(List<TetrimoPart> parts)
     {
         AssignType(parts, STATIC_PIECE);
 
@@ -195,6 +195,8 @@ public class PlayArea : MonoBehaviour
         {
             GameState.Instance.ControlledRain(row);
         }
+
+        return rowsCleared.Count;
     }
 
 
