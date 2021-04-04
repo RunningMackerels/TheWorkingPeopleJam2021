@@ -8,6 +8,8 @@ For this gamejam, we decided to do a take on the good old Tetris, but with a twi
 
 It was a great fun to do, and, while not complete, we are still proud of it. Enjoy our code!
 
+### [You can play it here](https://runningmackerels.github.io/TheWorkingPeopleJam2021/)
+
 ### Coding
 * The Running Mackerels Team: [Portus](https://github.com/PortusAlacer) | [Indie](https://github.com/indie-hub)
 
