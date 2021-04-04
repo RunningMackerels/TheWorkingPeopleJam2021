@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Profiling;
 using UnityEngine;
 
 public class GameState : MonoBehaviour
@@ -58,6 +57,24 @@ public class GameState : MonoBehaviour
     public PlayArea PlayArea => playArea;
 
     public List<Tetrimo> InstancedTetrimos = new List<Tetrimo>();
+
+    public List<Tetrimo> OrderedInstancedTetrimos
+    {
+        get
+        {
+            OrderIntancedTetrimos();
+            return InstancedTetrimos;
+        }
+    }
+
+    private void OrderIntancedTetrimos()
+    {
+        InstancedTetrimos = InstancedTetrimos.OrderBy(t => t, new TetrimoComparer()).ToList();
+        if (DirectionGrid == Vector2Int.up)
+        {
+            InstancedTetrimos.Reverse();
+        }
+    }
 
     private int _currentTetrimoFalling = -1;
 
@@ -161,7 +178,7 @@ public class GameState : MonoBehaviour
 
     public void MakeItRain()
     {
-        InstancedTetrimos.Sort();
+        OrderIntancedTetrimos();
 
         _currentTetrimoFalling = -1;
         MakeOneFall(null);
@@ -250,6 +267,10 @@ public class GameState : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S))
         {
             spawner.SpawnPiece();
+        }
+        else if (Input.GetKeyUp(KeyCode.Q))
+        {
+            OrderIntancedTetrimos();
         }
 #endif
 

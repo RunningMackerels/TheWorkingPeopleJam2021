@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
+public class Tetrimo : MonoBehaviour
 {
     private enum State
     {
@@ -409,20 +409,6 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         _state = State.Reverting;
     }
 
-    public int CompareTo(Tetrimo other)
-    {
-        HashSet<Tetrimo> adjacent = GameState.Instance.PlayArea.GetAdjacentPieces(Parts, GameState.Instance.DirectionGrid);
-
-        if (adjacent.Contains(other))
-        {
-            return 1;
-        }
-        else
-        {
-            return -1;
-        }
-    }
-
     public void Disable()
     {
         _state = State.Stopped;
@@ -438,5 +424,27 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
     {
         Gizmos.color = Color.green;
         Gizmos.DrawLine(transform.position, transform.position + new Vector3(0, GameState.Instance.Direction.y * _distanceToColision, 0f));
+    }
+}
+
+public class TetrimoComparer : IComparer<Tetrimo>
+{
+    public int Compare(Tetrimo a, Tetrimo b)
+    {
+        if (a == b)
+        {
+            return 0;
+        }
+
+        List<Tetrimo> adjacent = GameState.Instance.PlayArea.GetAdjacentPieces(a.Parts, new Vector2Int(0, -1));
+
+        if (adjacent.Contains(b))
+        {
+            return 1;
+        }
+        else
+        {
+            return -1;
+        }
     }
 }
