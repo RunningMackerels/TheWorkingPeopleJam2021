@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
+public class Tetrimo : MonoBehaviour
 {
     private enum State
     {
@@ -112,8 +112,6 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 
         float distance = Time.deltaTime * (GameState.Instance.GetCurrentBaseSpeed() + speedMultiplier * config.VerticalBoost);
 
-        int rowsCleared = 0;
-
         if (distance > _distanceToColision)
         {
             distance = _distanceToColision;
@@ -128,20 +126,23 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 
         transform.Translate(GameState.Instance.Direction * distance, Space.World);
 
+        int rowsCleared = 0;
         if (_state == State.Stopped)
         {
             rowsCleared = PlayArea.PlacePieces(Parts);
-            OnStopped?.Invoke(this);
-        }
-        
-        if (rowsCleared == 0)
-        {
-            return;
         }
 
-        if (GameState.Instance.CanFlip && UnityEngine.Random.value < GameState.Instance.Config.GetFlipProbability(rowsCleared))
+        if (rowsCleared > 0)
         {
-            PlayArea.FlipIt();
+            if (GameState.Instance.CanFlip && UnityEngine.Random.value < GameState.Instance.Config.GetFlipProbability(rowsCleared))
+            {
+                PlayArea.FlipIt();
+            }
+        }
+
+        if (_state == State.Stopped)
+        {
+            OnStopped?.Invoke(this);
         }
     }
 
@@ -409,18 +410,6 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         _state = State.Reverting;
     }
 
-    public int CompareTo(Tetrimo other)
-    {
-        HashSet<Tetrimo> adjacent = GameState.Instance.PlayArea.GetAdjacentPieces(Parts, GameState.Instance.DirectionGrid);
-
-        if (adjacent.Contains(other))
-        {
-            return 1;
-        }
-
-        return -1;
-    }
-
     public void Disable()
     {
         _state = State.Stopped;
@@ -436,5 +425,27 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
     {
         Gizmos.color = Color.green;
         Gizmos.DrawLine(transform.position, transform.position + new Vector3(0, GameState.Instance.Direction.y * _distanceToColision, 0f));
+    }
+}
+
+public class TetrimoComparer : IComparer<Tetrimo>
+{
+    public int Compare(Tetrimo a, Tetrimo b)
+    {
+        if (a == b)
+        {
+            return 0;
+        }
+
+        List<Tetrimo> adjacent = GameState.Instance.PlayArea.GetAdjacentPieces(a.Parts, new Vector2Int(0, -1));
+
+        if (adjacent.Contains(b))
+        {
+            return 1;
+        }
+        else
+        {
+            return -1;
+        }
     }
 }

@@ -227,16 +227,15 @@ public class PlayArea : MonoBehaviour
     {
         ResetFalling();
 
-        var selectionOrder = GameState.Instance.InstancedTetrimos;
-        selectionOrder.Sort();
-        
-        foreach (Tetrimo t in selectionOrder)
+        var tetrimos = GameState.Instance.OrderedInstancedTetrimos;
+
+        foreach (Tetrimo t in tetrimos)
         {
             RemoveStatic(t.Parts);
             t.OnStopped += OnPieceStopped;
         }
         
-        _reversingTetrimos.AddRange(selectionOrder);
+        _reversingTetrimos.AddRange(tetrimos);
     }
 
     private void OnPieceStopped(Tetrimo tetrimo)
@@ -265,9 +264,9 @@ public class PlayArea : MonoBehaviour
         }
     }
 
-    public HashSet<Tetrimo> GetAdjacentPieces(List<TetrimoPart> parts, Vector2Int directionNormalized)
+    public List<Tetrimo> GetAdjacentPieces(List<TetrimoPart> parts, Vector2Int directionNormalized)
     {
-        HashSet<Tetrimo> adjacent = new HashSet<Tetrimo>();
+        List<Tetrimo> adjacent = new List<Tetrimo>();
 
         foreach(TetrimoPart part in parts)
         {
@@ -365,11 +364,11 @@ public class PlayArea : MonoBehaviour
 
     private void Update()
     {
-        if(GameState.Instance.CurrentStage == GameState.Stage.Reversing)
+        if (GameState.Instance.CurrentStage == GameState.Stage.Reversing)
         {
             KeepRevertingUntilStop();
         }
-        
+
 #if UNITY_EDITOR
         if (Input.GetKeyUp(KeyCode.R))
         {

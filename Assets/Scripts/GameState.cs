@@ -58,6 +58,24 @@ public class GameState : MonoBehaviour
 
     public List<Tetrimo> InstancedTetrimos = new List<Tetrimo>();
 
+    public List<Tetrimo> OrderedInstancedTetrimos
+    {
+        get
+        {
+            OrderIntancedTetrimos();
+            return InstancedTetrimos;
+        }
+    }
+
+    private void OrderIntancedTetrimos()
+    {
+        InstancedTetrimos = InstancedTetrimos.OrderBy(t => t, new TetrimoComparer()).ToList();
+        if (DirectionGrid == Vector2Int.up)
+        {
+            InstancedTetrimos.Reverse();
+        }
+    }
+
     private int _currentTetrimoFalling = -1;
 
     private Stage _currentStage = Stage.Playing;
@@ -160,7 +178,7 @@ public class GameState : MonoBehaviour
 
     public void MakeItRain()
     {
-        InstancedTetrimos.Sort();
+        OrderIntancedTetrimos();
 
         _currentTetrimoFalling = -1;
         MakeOneFall(null);
@@ -249,6 +267,10 @@ public class GameState : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S))
         {
             spawner.SpawnPiece();
+        }
+        else if (Input.GetKeyUp(KeyCode.Q))
+        {
+            OrderIntancedTetrimos();
         }
 #endif
 
