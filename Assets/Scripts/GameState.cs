@@ -75,7 +75,7 @@ public class GameState : MonoBehaviour
                 if (_currentStage == Stage.Playing)
                 {
 #if UNITY_EDITOR                
-                    if(Config.AutomaticSpawn)
+                    if (Config.AutomaticSpawn)
 #endif                        
                     {
                         spawner.SpawnPiece();
@@ -87,16 +87,27 @@ public class GameState : MonoBehaviour
 
     public Action<Stage> OnStageChanged;
 
-    [SerializeField] 
+    [SerializeField]
     private GameConfig config = default;
     public GameConfig Config => config;
-    
+
     public int Score { private set; get; } = 0;
 
     private float _pulse = 0f;
     private float _pulseTime;
     public float Pulse => _pulse;
     public int Level => config.GetLevel(Score);
+
+
+    public int PiecesSinceLastFlip { private set; get; } = 0;
+
+    public bool CanFlip
+    {
+        get
+        {
+            return PiecesSinceLastFlip > Config.PiecesInBetweenFlips;
+        }
+    }
 
     private void Awake()
     {
@@ -115,16 +126,17 @@ public class GameState : MonoBehaviour
     private void Start()
     {
         Score = 0;
+        PiecesSinceLastFlip = 0;
 
         PlayArea.InitializeGrid();
-        _direction = new Vector2Int(0, (int) config.StartingDirection);
+        _direction = new Vector2Int(0, (int)config.StartingDirection);
 
 #if UNITY_EDITOR
         if (Config.AutomaticSpawn)
 #endif
         {
             spawner.SpawnPiece();
-        }        
+        }
     }
 
     public void ClearBoard()
@@ -141,7 +153,7 @@ public class GameState : MonoBehaviour
     {
         int initialNumberOfTetrimos = InstancedTetrimos.Count;
 
-        for(int i = 0; i < initialNumberOfTetrimos; i++)
+        for (int i = 0; i < initialNumberOfTetrimos; i++)
         {
             InstancedTetrimos[i].CheckIntegrity();
         }
@@ -178,10 +190,25 @@ public class GameState : MonoBehaviour
     {
         List<Tetrimo> toMove = new List<Tetrimo>();
 
-        foreach(Tetrimo piece in InstancedTetrimos)
+        foreach (Tetrimo piece in InstancedTetrimos)
         {
-            //TODO need to be tweaked for different orientation
-            if (piece.Parts.Any(part => PlayArea.PositionToGrid(part.transform.position).y > aboveRow))
+            bool willRain = false;
+            if (Direction.y < 0)
+            {
+                if (piece.Parts.Any(part => PlayArea.PositionToGrid(part.transform.position).y > aboveRow))
+                {
+                    willRain = true;
+                }
+            }
+            else
+            {
+                if (piece.Parts.Any(part => PlayArea.PositionToGrid(part.transform.position).y < aboveRow))
+                {
+                    willRain = true;
+                }
+            }
+
+            if (willRain)
             {
                 PlayArea.RemoveStatic(piece.Parts);
                 piece.transform.Translate(Direction * playArea.CellSize, Space.World);
@@ -193,6 +220,7 @@ public class GameState : MonoBehaviour
     public void ReverseDirection()
     {
         _direction *= Vector2Int.down;
+        PiecesSinceLastFlip = 0;
     }
 
     public void AddScore(int numberOfLines)
@@ -207,9 +235,15 @@ public class GameState : MonoBehaviour
 
     public void GameOver()
     {
-        
+
     }
-    
+
+    public void AddPiece(Tetrimo newPiece)
+    {
+        PiecesSinceLastFlip++;
+        InstancedTetrimos.Add(newPiece);
+    }
+
     private void Update()
     {
 #if UNITY_EDITOR

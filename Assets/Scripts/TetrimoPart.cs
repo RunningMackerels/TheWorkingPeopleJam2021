@@ -49,7 +49,6 @@ public class TetrimoPart : MonoBehaviour
     {
         _sr = GetComponent<SpriteRenderer>();
         Color.RGBToHSV(_sr.color, out _colorInHSV.x, out _colorInHSV.y, out _colorInHSV.z);
-        Debug.Log(_colorInHSV);
 #if UNITY_EDITOR
         if (type == PartType.None)
         {

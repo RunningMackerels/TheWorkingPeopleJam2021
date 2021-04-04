@@ -42,10 +42,12 @@ public class Spawner : MonoBehaviour
             return;
         }
 
-        GameState.Instance.InstancedTetrimos.Add(spawnedPiece);
+        GameState.Instance.AddPiece(spawnedPiece);
 
         _currentPiece = spawnedPiece;
         _currentPiece.OnStopped += HandleCurrentPieceStopped;
+
+        
 
         _pieceID++;
         PrepareNextPierce();
@@ -72,7 +74,7 @@ public class Spawner : MonoBehaviour
         int pieceIdx = Mathf.RoundToInt(Random.Range(0, tetrimosPrefabs.Count));
         _nextPiece = Instantiate(tetrimosPrefabs[pieceIdx], nextPieceUIRoot, false);
 
-        _nextPiece.name = _pieceID.ToString() + "_" + _nextPiece.name;
+        _nextPiece.name = _pieceID.ToString() + "_" + tetrimosPrefabs[pieceIdx].name;
         _nextPiece.Disable();
     }
 }

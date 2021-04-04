@@ -182,7 +182,7 @@ public class PlayArea : MonoBehaviour
     {
         AssignType(parts, STATIC_PIECE);
 
-        HashSet<int> rowsCleared = new HashSet<int>();
+        List<int> rowsCleared = new List<int>();
 
         for (int y = 1; y < height - 1; y++)
         {
@@ -196,7 +196,7 @@ public class PlayArea : MonoBehaviour
                     _grid[piece.Key.x, piece.Key.y] = EMPTY;
                 }
 
-                rowsCleared.Add(y);
+                rowsCleared.Add(y - rowsCleared.Count);
             }
         }
 
