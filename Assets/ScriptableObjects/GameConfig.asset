@@ -74,9 +74,9 @@ MonoBehaviour:
   - NumberOfLines: 4
     Probability: 1
   - NumberOfLines: 3
-    Probability: 0.5
+    Probability: 0.6
   - NumberOfLines: 2
-    Probability: 0.25
+    Probability: 0.3
   - NumberOfLines: 1
-    Probability: 0.1
+    Probability: 0.2
   PiecesInBetweenFlips: 1
