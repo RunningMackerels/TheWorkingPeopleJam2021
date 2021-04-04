@@ -42,10 +42,12 @@ public class Spawner : MonoBehaviour
             return;
         }
 
-        GameState.Instance.InstancedTetrimos.Add(spawnedPiece);
+        GameState.Instance.AddPiece(spawnedPiece);
 
         _currentPiece = spawnedPiece;
         _currentPiece.OnStopped += HandleCurrentPieceStopped;
+
+        
 
         _pieceID++;
         PrepareNextPierce();

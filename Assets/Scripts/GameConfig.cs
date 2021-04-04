@@ -53,6 +53,8 @@ public class GameConfig : ScriptableObject
     [SerializeField]
     private FlipProbability[] flipProbabilities;
 
+    public int PiecesInBetweenFlips = 1;
+
     private void OnEnable()
     {
         difficultyChart = difficultyChart.OrderByDescending(i => i.LowerLevel).ToList();
