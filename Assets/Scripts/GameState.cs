@@ -140,7 +140,7 @@ public class GameState : MonoBehaviour
         _pulse = Config.Pulse.y;
     }
 
-    private void Start()
+    public void Go()
     {
         Score = 0;
         PiecesSinceLastFlip = 0;

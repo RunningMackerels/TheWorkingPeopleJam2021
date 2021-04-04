@@ -16,7 +16,7 @@ public class CountDown : MonoBehaviour
 
     [SerializeField] 
     private AudioClip goClip = default;
-
+    
     private AudioSource _as = default;
     public void Awake()
     {
@@ -29,7 +29,9 @@ public class CountDown : MonoBehaviour
         number--;
         if (number < 0)
         {
-            gameObject.SetActive(false);
+            gameObject.SetActive(false);      
+            GameState.Instance.Go();
+
             return;
         }
         if (number == 0)
