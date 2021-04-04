@@ -29,6 +29,13 @@ public class TetrimoPart : MonoBehaviour
     [SerializeField] 
     private PartType type = PartType.None;
 
+    public PartType Type
+    {
+        get => type;
+        set => type = value;
+    }
+
+
     private SpriteRenderer _sr;
     private Vector3 _colorInHSV = Vector3.one;
     public void Setup()

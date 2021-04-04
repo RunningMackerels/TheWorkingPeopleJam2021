@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.XR;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 {
@@ -15,6 +17,27 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         Size
     }
 
+    [Flags]
+    private enum Side
+    {
+        All = 1 << 0,
+        Top = 1 << 1,
+        Bottom = 1 << 2,
+        Left = 1 << 3,
+        Right = 1 << 4,
+        BottomLeft = Bottom | Left,
+        BottomCap = Left | Bottom | Right,
+        BottomRight = Bottom | Right,
+        LeftCap = Left | Top | Bottom,
+        RightCap = Right | Top | Bottom,
+        StraightVertical = Bottom,
+        StraightHorizontal = Left | Right,
+        TopCap = Left | Top | Right,
+        TopLeft = Left | Top,
+        TopRight = Right | Top
+    }
+    
+    
     [SerializeField]
     private TetrimoConfig config = null;
 
@@ -41,6 +64,8 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
             part.ParentTetrimo = this;
             part.Setup();
         }
+
+        SpriteItUp();
         CalculateEndPosition();
     }
 
@@ -193,11 +218,100 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
     public void RemovePart(TetrimoPart tetrimoPart)
     {
         Parts.Remove(tetrimoPart);
+        SpriteItUp();
 
         if (Parts.Count == 0)
         {
             GameState.Instance.InstancedTetrimos.Remove(this);
             Destroy(gameObject);
+        }
+    }
+
+    private void SpriteItUp()
+    {
+        foreach (TetrimoPart part in Parts)
+        {
+            bool top = false, bottom = false, left = false, right = false;
+            foreach (TetrimoPart other in Parts)
+            {
+                if (part == other)
+                {
+                    continue;
+                }
+
+                var diff = part.transform.position - other.transform.position;
+                if (diff.magnitude > 1)
+                {
+                    continue;
+                }
+                top |= diff.y < 0;
+                bottom |= diff.y > 0;
+                left |= diff.x > 0;
+                right |= diff.x < 0;
+            }
+
+            Side result = Side.All;
+            if (top)
+            {
+                result |= Side.Top;
+            }
+
+            if (bottom)
+            {
+                result |= Side.Bottom;
+            }
+
+            if (left)
+            {
+                result |= Side.Left;    
+            }
+
+            if (right)
+            {
+                result |= Side.Right;
+            }
+
+            switch (result)
+            {
+                case Side.All:
+                    part.Type = TetrimoPart.PartType.Single;
+                    break;
+                case Side.BottomLeft:
+                    part.Type = TetrimoPart.PartType.BottomLeftCorner;
+                    break;
+                case Side.BottomCap:
+                    part.Type = TetrimoPart.PartType.BottomCap;
+                    break;
+                case Side.BottomRight:
+                    part.Type = TetrimoPart.PartType.BottomRightCorner;
+                    break;
+                case Side.LeftCap:
+                    part.Type = TetrimoPart.PartType.LeftCap;
+                    break;
+                case Side.RightCap:
+                    part.Type = TetrimoPart.PartType.RightCap;
+                    break;
+                case Side.StraightVertical:
+                    part.Type = TetrimoPart.PartType.StraightVertical;
+                    break;
+                case Side.StraightHorizontal:
+                    part.Type = TetrimoPart.PartType.StraightHorizontal;
+                    break;
+                case Side.TopCap:
+                    part.Type = TetrimoPart.PartType.TopCap;
+                    break;
+                case Side.TopLeft:
+                    part.Type = TetrimoPart.PartType.TopLeftCorner;
+                    break;
+                case Side.TopRight:
+                    part.Type = TetrimoPart.PartType.TopRightCorner;
+                    break;
+                default:
+                    Debug.Log(part.gameObject.name + result);
+                    throw new ArgumentOutOfRangeException();
+            }
+            
+            
         }
     }
 
