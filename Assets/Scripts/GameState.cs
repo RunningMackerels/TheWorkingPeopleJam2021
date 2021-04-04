@@ -6,13 +6,6 @@ using UnityEngine;
 
 public class GameState : MonoBehaviour
 {
-    [Serializable]
-    private class ScoreWeight
-    {
-        public int NumberOfLines;
-        public int Score = 10;
-    }
-
     public enum Stage
     {
         Playing,
@@ -93,9 +86,6 @@ public class GameState : MonoBehaviour
     }
 
     public Action<Stage> OnStageChanged;
-
-    [SerializeField]
-    private ScoreWeight[] scoreWeights;
 
     [SerializeField] 
     private GameConfig config = default;
@@ -206,7 +196,12 @@ public class GameState : MonoBehaviour
 
     public void AddScore(int numberOfLines)
     {
-        _score += scoreWeights.FirstOrDefault(s => s.NumberOfLines == numberOfLines).Score;
+        _score += Config.GetScore(numberOfLines);
+    }
+
+    public float GetCurrentBaseSpeed()
+    {
+        return Config.GetBaseSpeed(_score);
     }
 
     public void GameOver()
