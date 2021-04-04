@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -57,6 +56,7 @@ public class GameConfig : ScriptableObject
     private void OnEnable()
     {
         difficultyChart = difficultyChart.OrderByDescending(i => i.LowerLevel).ToList();
+        flipProbabilities = flipProbabilities.OrderByDescending(i => i.Probability).ToArray();
     }
 
     public int GetScore(int numberOfLines)

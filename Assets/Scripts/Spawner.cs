@@ -72,7 +72,7 @@ public class Spawner : MonoBehaviour
         int pieceIdx = Mathf.RoundToInt(Random.Range(0, tetrimosPrefabs.Count));
         _nextPiece = Instantiate(tetrimosPrefabs[pieceIdx], nextPieceUIRoot, false);
 
-        _nextPiece.name = _pieceID.ToString() + "_" + _nextPiece.name;
+        _nextPiece.name = _pieceID.ToString() + "_" + tetrimosPrefabs[pieceIdx].name;
         _nextPiece.Disable();
     }
 }

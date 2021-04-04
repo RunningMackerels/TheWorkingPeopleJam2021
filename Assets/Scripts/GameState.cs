@@ -179,8 +179,23 @@ public class GameState : MonoBehaviour
 
         foreach(Tetrimo piece in InstancedTetrimos)
         {
-            //TODO need to be tweaked for different orientation
-            if (piece.Parts.Any(part => PlayArea.PositionToGrid(part.transform.position).y > aboveRow))
+            bool willRain = false;
+            if (Direction.y < 0)
+            {
+                if (piece.Parts.Any(part => PlayArea.PositionToGrid(part.transform.position).y > aboveRow))
+                {
+                    willRain = true;
+                }
+            }
+            else
+            {
+                if (piece.Parts.Any(part => PlayArea.PositionToGrid(part.transform.position).y < aboveRow))
+                {
+                    willRain = true;
+                }
+            }
+
+            if (willRain)
             {
                 PlayArea.RemoveStatic(piece.Parts);
                 piece.transform.Translate(Direction * playArea.CellSize, Space.World);
