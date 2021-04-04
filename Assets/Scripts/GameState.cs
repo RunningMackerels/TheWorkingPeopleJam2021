@@ -69,7 +69,9 @@ public class GameState : MonoBehaviour
 
     private void OrderIntancedTetrimos()
     {
-        InstancedTetrimos = InstancedTetrimos.OrderBy(t => t, new TetrimoComparer()).ToList();
+        InstancedTetrimos = InstancedTetrimos.OrderBy(t => t.transform.position.y).ToList();
+        //But it should be this one, we don't really understand why the comparer is not working
+        //InstancedTetrimos = InstancedTetrimos.OrderBy(t => t, new TetrimoComparer()).ToList();
         if (DirectionGrid == Vector2Int.up)
         {
             InstancedTetrimos.Reverse();
