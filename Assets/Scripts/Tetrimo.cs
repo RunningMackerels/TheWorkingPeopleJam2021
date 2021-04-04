@@ -417,10 +417,8 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         {
             return 1;
         }
-        else
-        {
-            return -1;
-        }
+
+        return -1;
     }
 
     public void Disable()
