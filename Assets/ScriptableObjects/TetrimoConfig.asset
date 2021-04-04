@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VerticalSpeed: 5
   VerticalBoost: 4
-  DropMultiplier: 15
+  DropMultiplier: 30
