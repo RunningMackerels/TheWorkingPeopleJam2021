@@ -20,12 +20,19 @@ public class GameConfig : ScriptableObject
         public float Speed;
     }
 
+    [Serializable]
+    private class FlipProbability
+    {
+        public int NumberOfLines;
+        public float Probability;
+    }
+
     public enum Direction
     {
         Up = 1,
         Down = -1
     }
-    
+
     public bool AutomaticSpawn = false;
     public float TimeBetweenSpawns = 0.5f;
     public Direction StartingDirection = Direction.Down;
@@ -44,6 +51,9 @@ public class GameConfig : ScriptableObject
     [SerializeField]
     private List<DifficultyLevel> difficultyChart;
 
+    [SerializeField]
+    private FlipProbability[] flipProbabilities;
+
     private void OnEnable()
     {
         difficultyChart = difficultyChart.OrderByDescending(i => i.LowerLevel).ToList();
@@ -57,7 +67,11 @@ public class GameConfig : ScriptableObject
     public float GetBaseSpeed(int score)
     {
         int level = score / scorePerLevel;
-        //Debug.LogWarning(level);
         return difficultyChart.FirstOrDefault(s => level >= s.LowerLevel).Speed;
+    }
+
+    public float GetFlipProbability(int numberOfLines)
+    {
+        return flipProbabilities.FirstOrDefault(s => s.NumberOfLines == numberOfLines).Probability;
     }
 }

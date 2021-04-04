@@ -122,7 +122,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
             OnStopped?.Invoke(this);
         }
         
-        if (rowsCleared >= 4)
+        if (UnityEngine.Random.value > GameState.Instance.Config.GetFlipProbability(rowsCleared))
         {
             PlayArea.FlipIt();
         }

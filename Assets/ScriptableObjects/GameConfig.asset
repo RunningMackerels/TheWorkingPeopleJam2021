@@ -71,3 +71,12 @@ MonoBehaviour:
     Speed: 1.38
   - LowerLevel: 0
     Speed: 1.25
+  flipProbabilities:
+  - NumberOfLines: 1
+    Probability: 0.1
+  - NumberOfLines: 2
+    Probability: 0.25
+  - NumberOfLines: 3
+    Probability: 0.5
+  - NumberOfLines: 4
+    Probability: 1
