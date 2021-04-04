@@ -33,6 +33,7 @@ public class Spawner : MonoBehaviour
         spawnedPiece.transform.position = spawnPosition;
         spawnedPiece.transform.rotation = transform.rotation;
         spawnedPiece.transform.parent = _playArea.transform;
+        spawnedPiece.transform.localScale = Vector3.one;
         spawnedPiece.Enable();
 
         if (GameState.Instance.PlayArea.CheckInterception(spawnedPiece.Parts))
