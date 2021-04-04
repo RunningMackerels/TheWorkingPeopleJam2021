@@ -96,10 +96,9 @@ public class PlayArea : MonoBehaviour
         Vector2Int originGrid = PositionToGrid(origin);
         Vector2 originGridCenter = GridCenter(originGrid);
 
-        Debug.Log(direction);
         int gridDistance = DistanceToNextOccupiedGrid(originGrid, direction);
 
-        Vector2 originToCenterOrigin = origin - originGridCenter;
+        Vector2 originToCenterOrigin = direction.y < 0f ? origin - originGridCenter : originGridCenter - origin;
         float distanceToGridCenter = originToCenterOrigin.x * directionFilter.x + originToCenterOrigin.y * directionFilter.y;
 
         return gridDistance * cellSize + distanceToGridCenter;

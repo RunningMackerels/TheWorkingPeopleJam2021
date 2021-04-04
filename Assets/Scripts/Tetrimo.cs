@@ -68,9 +68,8 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
                 break;
         }
 
-        
         float distance = Time.deltaTime * (config.VerticalSpeed + speedMultiplier * config.VerticalBoost);
-        
+
         int rowsCleared = 0;
 
         if (distance > _distanceToColision)
@@ -183,8 +182,6 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         }
 
         _distanceToColision = _distanceToColision >= 0 ? _distanceToColision : 0;
-        
-        Debug.Log("Distance: " + _distanceToColision + " | Direction: " + GameState.Instance.DirectionGrid.y);
     }
 
     public void RemovePart(TetrimoPart tetrimoPart)
@@ -277,5 +274,11 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         {
             return -1;
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(transform.position, transform.position + new Vector3(0, GameState.Instance.Direction.y * _distanceToColision, 0f));
     }
 }
