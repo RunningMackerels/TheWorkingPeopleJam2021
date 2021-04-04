@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Profiling;
 using UnityEngine;
 
 public class GameState : MonoBehaviour
@@ -102,6 +103,10 @@ public class GameState : MonoBehaviour
     
     private int _score = 0;
 
+    private float _pulse = 0f;
+    private float _pulseTime;
+    public float Pulse => _pulse;
+    
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -112,6 +117,8 @@ public class GameState : MonoBehaviour
         {
             _instance = this;
         }
+
+        _pulse = Config.Pulse.y;
     }
 
     private void Start()
@@ -207,13 +214,30 @@ public class GameState : MonoBehaviour
         
     }
     
-#if UNITY_EDITOR
     private void Update()
     {
+#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.S))
         {
             spawner.SpawnPiece();
         }
+#endif
+
+        Pulsating();
     }
-#endif    
+
+    private void Pulsating()
+    {
+        if (_pulse == Config.Pulse.y)
+        {
+            var tmp = Config.Pulse.y;
+            Config.Pulse.y = Config.Pulse.x;
+            Config.Pulse.x = tmp;
+
+            _pulseTime = 0;
+        }
+
+        _pulseTime += Time.deltaTime;
+        _pulse = Mathf.SmoothStep(Config.Pulse.x, Config.Pulse.y, _pulseTime / Config.PulseTiming);
+    }
 }

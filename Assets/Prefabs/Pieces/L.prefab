@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   config: {fileID: 11400000, guid: b3969a537444b674a9d14db06a8a87a8, type: 2}
+  baseColor: {r: 0.4139999, g: 0.9, b: 0.09000002, a: 1}
   Parts:
   - {fileID: 7296746861638647582}
   - {fileID: 5795121194044269795}
@@ -149,6 +150,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ParentTetrimo: {fileID: 0}
+  type: 5
 --- !u!1 &3335548630263426535
 GameObject:
   m_ObjectHideFlags: 0
@@ -245,6 +247,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ParentTetrimo: {fileID: 0}
+  type: 3
 --- !u!1 &6494452788808532193
 GameObject:
   m_ObjectHideFlags: 0
@@ -341,6 +344,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ParentTetrimo: {fileID: 0}
+  type: 8
 --- !u!1 &7428448535186886219
 GameObject:
   m_ObjectHideFlags: 0
@@ -437,3 +441,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ParentTetrimo: {fileID: 0}
+  type: 0

@@ -18,6 +18,11 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
     [SerializeField]
     private TetrimoConfig config = null;
 
+    [SerializeField] 
+    private Color baseColor = default;
+
+    public Color BaseColor => baseColor;
+
     public List<TetrimoPart> Parts;
 
     private State _state = State.Interactable;
@@ -34,6 +39,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         foreach (TetrimoPart part in Parts)
         {
             part.ParentTetrimo = this;
+            part.Setup();
         }
         CalculateEndPosition();
     }

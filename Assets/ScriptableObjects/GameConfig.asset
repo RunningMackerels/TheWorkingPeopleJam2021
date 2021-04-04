@@ -14,3 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AutomaticSpawn: 0
   TimeBetweenSpawns: 0.5
+  StartingDirection: -1
+  TetrimoParts:
+  - {fileID: 21300000, guid: ee7ab02bcee1441bbb67c7a932432768, type: 3}
+  - {fileID: 21300000, guid: de1c35a19f4f84bd6a9db960f2d8a30d, type: 3}
+  - {fileID: 21300000, guid: 8bfcece32ede54c0aa68b04ae579f914, type: 3}
+  - {fileID: 21300000, guid: e5ff90abcde7d4ae3ab083086d76ff61, type: 3}
+  - {fileID: 0}
+  - {fileID: 21300000, guid: 9f8cb91d4ca4d4761a7d3ffda25771df, type: 3}
+  - {fileID: 21300000, guid: b2ec275d3468c422e9d5601b636aba37, type: 3}
+  - {fileID: 21300000, guid: 296a3a346559d4aabb29b64eff12de24, type: 3}
+  - {fileID: 21300000, guid: 777c5f5dcc845434ea2906cfcf894770, type: 3}
+  - {fileID: 21300000, guid: 3959530fc4e7f48ccbb4d0bd5ebc2b67, type: 3}
+  - {fileID: 21300000, guid: 742688ff299eb47f58fab26905134430, type: 3}
+  PulseTiming: 0.5
+  Pulse: {x: 90, y: 100}

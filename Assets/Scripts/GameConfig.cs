@@ -13,4 +13,9 @@ public class GameConfig : ScriptableObject
     public bool AutomaticSpawn = false;
     public float TimeBetweenSpawns = 0.5f;
     public Direction StartingDirection = Direction.Down;
+
+
+    public Sprite[] TetrimoParts;
+    public float PulseTiming = 2f;
+    public Vector2 Pulse = new Vector2(90f, 100f);
 }
