@@ -96,7 +96,8 @@ public class GameState : MonoBehaviour
     private float _pulse = 0f;
     private float _pulseTime;
     public float Pulse => _pulse;
-    
+    public int Level => config.GetLevel(Score);
+
     private void Awake()
     {
         if (_instance != null && _instance != this)

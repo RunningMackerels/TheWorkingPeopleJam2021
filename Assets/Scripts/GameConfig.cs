@@ -27,7 +27,6 @@ public class GameConfig : ScriptableObject
     }
     
     public bool AutomaticSpawn = false;
-    public float TimeBetweenSpawns = 0.5f;
     public Direction StartingDirection = Direction.Down;
 
 
@@ -59,5 +58,10 @@ public class GameConfig : ScriptableObject
         int level = score / scorePerLevel;
         //Debug.LogWarning(level);
         return difficultyChart.FirstOrDefault(s => level >= s.LowerLevel).Speed;
+    }
+
+    public int GetLevel(int score)
+    {
+        return score / scorePerLevel;
     }
 }

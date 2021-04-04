@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -47,6 +48,9 @@ public class PlayArea : MonoBehaviour
     private float _timePassedForNextReverse = 0;
     private bool _fallingIsDirty = false;
     
+    private Action<int> OnNewLines;
+    private Action OnFlip;
+
     private void Awake()
     {
         InitializeGrid();
@@ -57,6 +61,18 @@ public class PlayArea : MonoBehaviour
     {
         InitializeGrid();
         ResetFalling();
+    }
+
+    private void OnEnable()
+    {
+        OnNewLines += SoundPlayer.Instance.PlayNumberLines;
+        OnFlip += SoundPlayer.Instance.PlayReversed;
+    }
+
+    private void OnDisable()
+    {
+        OnNewLines -= SoundPlayer.Instance.PlayNumberLines;
+        OnFlip -= SoundPlayer.Instance.PlayReversed;
     }
 
     public void InitializeGrid()
@@ -188,6 +204,7 @@ public class PlayArea : MonoBehaviour
         {
             GameState.Instance.CheckTetrimosIntegrity();
             GameState.Instance.AddScore(rowsCleared.Count);
+            OnNewLines?.Invoke(rowsCleared.Count);
         }
 
         foreach (int row in rowsCleared)
@@ -203,6 +220,7 @@ public class PlayArea : MonoBehaviour
     {
         GameState.Instance.ReverseDirection();
         GameState.Instance.CurrentStage = GameState.Stage.Reversing;
+        OnFlip?.Invoke();
         ReversingPlayArea();
     }
 

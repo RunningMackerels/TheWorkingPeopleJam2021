@@ -56,6 +56,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
     public bool IsStopped => _state == State.Stopped;
 
     public Action<Tetrimo> OnStopped;
+    public Action<Tetrimo> OnMoved;
 
     private void Start()
     {
@@ -65,7 +66,18 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
             part.ParentTetrimo = this;
             part.Setup();
         }
+    }
 
+    private void OnEnable()
+    {
+        OnStopped += SoundPlayer.Instance.PlayStopped;
+        OnMoved += SoundPlayer.Instance.PlayHorizontalMove;
+    }
+
+    private void OnDisable()
+    {
+        OnStopped -= SoundPlayer.Instance.PlayStopped;
+        OnMoved -= SoundPlayer.Instance.PlayHorizontalMove;
     }
 
     private void Update()
@@ -180,6 +192,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         if (distanceToColision > 0)
         {
             transform.Translate(direction * PlayArea.CellSize, Space.World);
+            OnMoved?.Invoke(this);
         }
 
         CalculateEndPosition();
@@ -192,6 +205,10 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         if (PlayArea.CheckInterception(Parts))
         {
             transform.Rotate(new Vector3(0f, 0f, -angle));
+        }
+        else
+        {
+            OnMoved?.Invoke(this);
         }
 
         CalculateEndPosition();
