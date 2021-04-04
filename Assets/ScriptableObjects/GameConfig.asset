@@ -12,5 +12,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ae40ef878ace4121878c8e5a4a259f6, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: 
-  AutomaticSpawn: 0
+  AutomaticSpawn: 1
   TimeBetweenSpawns: 0.5
+  StartingDirection: -1
+  scoreWeights:
+  - NumberOfLines: 1
+    Score: 10
+  - NumberOfLines: 2
+    Score: 20
+  - NumberOfLines: 3
+    Score: 50
+  - NumberOfLines: 4
+    Score: 100
+  scorePerLevel: 500
+  difficultyChart:
+  - LowerLevel: 29
+    Speed: 50
+  - LowerLevel: 19
+    Speed: 33.33
+  - LowerLevel: 16
+    Speed: 20
+  - LowerLevel: 13
+    Speed: 14.28
+  - LowerLevel: 10
+    Speed: 12.5
+  - LowerLevel: 9
+    Speed: 10
+  - LowerLevel: 8
+    Speed: 7.69
+  - LowerLevel: 7
+    Speed: 4.55
+  - LowerLevel: 6
+    Speed: 3.33
+  - LowerLevel: 5
+    Speed: 2.63
+  - LowerLevel: 4
+    Speed: 2.12
+  - LowerLevel: 3
+    Speed: 1.81
+  - LowerLevel: 2
+    Speed: 1.58
+  - LowerLevel: 1
+    Speed: 1.38
+  - LowerLevel: 0
+    Speed: 1.25

@@ -68,7 +68,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
                 break;
         }
 
-        float distance = Time.deltaTime * (config.VerticalSpeed + speedMultiplier * config.VerticalBoost);
+        float distance = Time.deltaTime * (GameState.Instance.GetCurrentBaseSpeed() + speedMultiplier * config.VerticalBoost);
 
         int rowsCleared = 0;
 
@@ -92,7 +92,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
             OnStopped?.Invoke(this);
         }
         
-        if (rowsCleared > 0)
+        if (rowsCleared >= 4)
         {
             PlayArea.FlipIt();
         }
