@@ -57,7 +57,7 @@ public class GameConfig : ScriptableObject
     public float GetBaseSpeed(int score)
     {
         int level = score / scorePerLevel;
-        Debug.LogWarning(level);
+        //Debug.LogWarning(level);
         return difficultyChart.FirstOrDefault(s => level >= s.LowerLevel).Speed;
     }
 }

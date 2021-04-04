@@ -20,21 +20,23 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
     [Flags]
     private enum Side
     {
-        All = 1 << 0,
-        Top = 1 << 1,
-        Bottom = 1 << 2,
-        Left = 1 << 3,
-        Right = 1 << 4,
-        BottomLeft = Bottom | Left,
-        BottomCap = Left | Bottom | Right,
-        BottomRight = Bottom | Right,
-        LeftCap = Left | Top | Bottom,
-        RightCap = Right | Top | Bottom,
-        StraightVertical = Bottom,
-        StraightHorizontal = Left | Right,
-        TopCap = Left | Top | Right,
-        TopLeft = Left | Top,
-        TopRight = Right | Top
+        None                   = 0,
+        Top                    = 1 << 0,
+        Bottom                 = 1 << 1,
+        Left                   = 1 << 2,
+        Right                  = 1 << 3,
+        BottomLeft             = Top | Right,
+        BottomCap              = Top,
+        BottomRight            = Top | Left,
+        LeftCap                = Right,
+        RightCap               = Left,
+        StraightVertical       = Top | Bottom,
+        StraightHorizontalLine = Left | Right | Top,
+        StraightHorizontal     = Right | Left,
+        TopCap                 = Bottom,
+        TopLeft                = Bottom | Right,
+        TopRight               = Bottom | Left,
+        All                    = Top | Bottom | Left | Right
     }
     
     
@@ -59,13 +61,14 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 
     private void Start()
     {
+        SpriteItUp();
         foreach (TetrimoPart part in Parts)
         {
             part.ParentTetrimo = this;
             part.Setup();
         }
 
-        SpriteItUp();
+
         CalculateEndPosition();
     }
 
@@ -219,7 +222,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
     {
         Parts.Remove(tetrimoPart);
         SpriteItUp();
-
+        
         if (Parts.Count == 0)
         {
             GameState.Instance.InstancedTetrimos.Remove(this);
@@ -238,8 +241,10 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
                 {
                     continue;
                 }
-
-                var diff = part.transform.position - other.transform.position;
+                
+                
+                
+                var diff = part.transform.localPosition - other.transform.localPosition;
                 if (diff.magnitude > 1)
                 {
                     continue;
@@ -250,7 +255,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
                 right |= diff.x < 0;
             }
 
-            Side result = Side.All;
+            Side result = Side.None;
             if (top)
             {
                 result |= Side.Top;
@@ -273,7 +278,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 
             switch (result)
             {
-                case Side.All:
+                case Side.None:
                     part.Type = TetrimoPart.PartType.Single;
                     break;
                 case Side.BottomLeft:
@@ -294,6 +299,9 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
                 case Side.StraightVertical:
                     part.Type = TetrimoPart.PartType.StraightVertical;
                     break;
+                case Side.StraightHorizontalLine:
+                    part.Type = TetrimoPart.PartType.StraightHorizontalLine;
+                    break;
                 case Side.StraightHorizontal:
                     part.Type = TetrimoPart.PartType.StraightHorizontal;
                     break;
@@ -307,7 +315,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
                     part.Type = TetrimoPart.PartType.TopRightCorner;
                     break;
                 default:
-                    Debug.Log(part.gameObject.name + result);
+                    Debug.Log(part.ParentTetrimo.gameObject.name + " | " + part.gameObject.name + " | " + result);
                     throw new ArgumentOutOfRangeException();
             }
             
@@ -356,6 +364,7 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         Transform newTransformPiece = newGOPiece.GetComponent<Transform>();
         newTransformPiece.position = transform.position;
         Tetrimo newPiece = newGOPiece.AddComponent<Tetrimo>();
+        newPiece.baseColor = baseColor;
         newPiece.Parts = newPieceParts;
         newPiece.config = config;
         newPiece._state = State.Stopped;

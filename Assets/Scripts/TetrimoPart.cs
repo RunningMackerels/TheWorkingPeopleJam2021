@@ -12,6 +12,7 @@ public class TetrimoPart : MonoBehaviour
         BottomCap,
         LeftCap,
         RightCap,
+        StraightHorizontalLine,
         StraightHorizontal,
         StraightVertical,
         TopLeftCorner,
@@ -29,10 +30,16 @@ public class TetrimoPart : MonoBehaviour
     [SerializeField] 
     private PartType type = PartType.None;
 
+    private bool _dirty = false;
+    
     public PartType Type
     {
         get => type;
-        set => type = value;
+        set
+        {
+            type = value;
+            _dirty = true;
+        }
     }
 
 
@@ -62,6 +69,11 @@ public class TetrimoPart : MonoBehaviour
 
     private void Update()
     {
+        if (_dirty)
+        {
+            _sr.sprite = GameState.Instance.Config.TetrimoParts[(int) type];
+            _dirty = false;
+        }
         _colorInHSV.z = GameState.Instance.Pulse * (1.0f / 100.0f);
         _sr.color = Color.HSVToRGB(_colorInHSV.x, _colorInHSV.y, _colorInHSV.z);
     }
