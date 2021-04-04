@@ -80,7 +80,12 @@ public class GameState : MonoBehaviour
                 //if we are changing to playing, then spawn a piece
                 if (_currentStage == Stage.Playing)
                 {
-                    spawner.SpawnPiece();
+#if UNITY_EDITOR                
+                    if(Config.AutomaticSpawn)
+#endif                        
+                    {
+                        spawner.SpawnPiece();
+                    }
                 }
             }
         }
@@ -114,6 +119,7 @@ public class GameState : MonoBehaviour
         _score = 0;
 
         PlayArea.InitializeGrid();
+        _direction = new Vector2Int(0, (int) config.StartingDirection);
 
 #if UNITY_EDITOR
         if (Config.AutomaticSpawn)

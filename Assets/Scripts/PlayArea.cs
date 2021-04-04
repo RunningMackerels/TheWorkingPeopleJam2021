@@ -299,7 +299,7 @@ public class PlayArea : MonoBehaviour
                         Gizmos.color = Color.green;
                         break;
                     case 2:
-                        Gizmos.color = Color.yellow;
+                        Gizmos.color = Color.black;
                         break;
                     case 3:
                         Gizmos.color = Color.red;
