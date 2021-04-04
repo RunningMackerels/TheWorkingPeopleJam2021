@@ -69,7 +69,9 @@ public class GameState : MonoBehaviour
 
     private void OrderIntancedTetrimos()
     {
-        InstancedTetrimos = InstancedTetrimos.OrderBy(t => t, new TetrimoComparer()).ToList();
+        InstancedTetrimos = InstancedTetrimos.OrderBy(t => t.transform.position.y).ToList();
+        //But it should be this one, we don't really understand why the comparer is not working
+        //InstancedTetrimos = InstancedTetrimos.OrderBy(t => t, new TetrimoComparer()).ToList();
         if (DirectionGrid == Vector2Int.up)
         {
             InstancedTetrimos.Reverse();
@@ -117,6 +119,12 @@ public class GameState : MonoBehaviour
 
 
     public int PiecesSinceLastFlip { private set; get; } = 0;
+
+    [SerializeField]
+    private List<GameObject> objectToTurnOffGameOver;
+
+    [SerializeField]
+    private List<GameObject> objectToTurnOnOnGameOver;
 
     public bool CanFlip
     {
@@ -252,7 +260,8 @@ public class GameState : MonoBehaviour
 
     public void GameOver()
     {
-
+        objectToTurnOffGameOver.ForEach(i => i.SetActive(false));
+        objectToTurnOnOnGameOver.ForEach(i => i.SetActive(true));
     }
 
     public void AddPiece(Tetrimo newPiece)
