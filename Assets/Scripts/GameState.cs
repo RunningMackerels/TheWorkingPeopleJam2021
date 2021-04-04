@@ -91,7 +91,7 @@ public class GameState : MonoBehaviour
     private GameConfig config = default;
     public GameConfig Config => config;
     
-    private int _score = 0;
+    public int Score { private set; get; } = 0;
 
     private float _pulse = 0f;
     private float _pulseTime;
@@ -113,7 +113,7 @@ public class GameState : MonoBehaviour
 
     private void Start()
     {
-        _score = 0;
+        Score = 0;
 
         PlayArea.InitializeGrid();
         _direction = new Vector2Int(0, (int) config.StartingDirection);
@@ -196,12 +196,12 @@ public class GameState : MonoBehaviour
 
     public void AddScore(int numberOfLines)
     {
-        _score += Config.GetScore(numberOfLines);
+        Score += Config.GetScore(numberOfLines);
     }
 
     public float GetCurrentBaseSpeed()
     {
-        return Config.GetBaseSpeed(_score);
+        return Config.GetBaseSpeed(Score);
     }
 
     public void GameOver()

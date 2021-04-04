@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.XR;
 using UnityEngine;
-using UnityEngine.Networking;
 
 public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 {
@@ -68,8 +66,6 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
             part.Setup();
         }
 
-
-        CalculateEndPosition();
     }
 
     private void Update()
@@ -403,6 +399,17 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
         {
             return -1;
         }
+    }
+
+    public void Disable()
+    {
+        _state = State.Stopped;
+    }
+
+    public void Enable()
+    {
+        _state = State.Interactable;
+        CalculateEndPosition();
     }
 
     private void OnDrawGizmos()

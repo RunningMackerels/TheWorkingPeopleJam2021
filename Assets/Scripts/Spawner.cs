@@ -12,6 +12,9 @@ public class Spawner : MonoBehaviour
     [SerializeField]
     private Tetrimo _nextPiece = null;
 
+    [SerializeField]
+    private Transform nextPieceUIRoot;
+
     private int _pieceID = 0;
 
     private Tetrimo _currentPiece = null;
@@ -26,8 +29,11 @@ public class Spawner : MonoBehaviour
         Vector3 spawnPosition = new Vector3(transform.position.x * -1f * GameState.Instance.Direction.x,
                                             transform.position.y * -1f * GameState.Instance.Direction.y,
                                             0f);
-        Tetrimo spawnedPiece = Instantiate(_nextPiece, spawnPosition, transform.rotation, _playArea.transform);
-        spawnedPiece.name = _pieceID.ToString() + "_" + _nextPiece.name;
+        Tetrimo spawnedPiece = _nextPiece;
+        spawnedPiece.transform.position = spawnPosition;
+        spawnedPiece.transform.rotation = transform.rotation;
+        spawnedPiece.transform.parent = _playArea.transform;
+        spawnedPiece.Enable();
 
         if (GameState.Instance.PlayArea.CheckInterception(spawnedPiece.Parts))
         {
@@ -63,6 +69,9 @@ public class Spawner : MonoBehaviour
     private void PrepareNextPierce()
     {
         int pieceIdx = Mathf.RoundToInt(Random.Range(0, tetrimosPrefabs.Count));
-        _nextPiece = tetrimosPrefabs[pieceIdx];
+        _nextPiece = Instantiate(tetrimosPrefabs[pieceIdx], nextPieceUIRoot, false);
+
+        _nextPiece.name = _pieceID.ToString() + "_" + _nextPiece.name;
+        _nextPiece.Disable();
     }
 }
