@@ -112,8 +112,6 @@ public class Tetrimo : MonoBehaviour
 
         float distance = Time.deltaTime * (GameState.Instance.GetCurrentBaseSpeed() + speedMultiplier * config.VerticalBoost);
 
-        int rowsCleared = 0;
-
         if (distance > _distanceToColision)
         {
             distance = _distanceToColision;
@@ -128,20 +126,23 @@ public class Tetrimo : MonoBehaviour
 
         transform.Translate(GameState.Instance.Direction * distance, Space.World);
 
+        int rowsCleared = 0;
         if (_state == State.Stopped)
         {
             rowsCleared = PlayArea.PlacePieces(Parts);
-            OnStopped?.Invoke(this);
-        }
-        
-        if (rowsCleared == 0)
-        {
-            return;
         }
 
-        if (GameState.Instance.CanFlip && UnityEngine.Random.value < GameState.Instance.Config.GetFlipProbability(rowsCleared))
+        if (rowsCleared > 0)
         {
-            PlayArea.FlipIt();
+            if (GameState.Instance.CanFlip && UnityEngine.Random.value < GameState.Instance.Config.GetFlipProbability(rowsCleared))
+            {
+                PlayArea.FlipIt();
+            }
+        }
+
+        if (_state == State.Stopped)
+        {
+            OnStopped?.Invoke(this);
         }
     }
 
