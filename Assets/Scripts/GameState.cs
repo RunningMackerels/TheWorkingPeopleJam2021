@@ -118,6 +118,12 @@ public class GameState : MonoBehaviour
 
     public int PiecesSinceLastFlip { private set; get; } = 0;
 
+    [SerializeField]
+    private List<GameObject> objectToTurnOffGameOver;
+
+    [SerializeField]
+    private List<GameObject> objectToTurnOnOnGameOver;
+
     public bool CanFlip
     {
         get
@@ -252,7 +258,8 @@ public class GameState : MonoBehaviour
 
     public void GameOver()
     {
-
+        objectToTurnOffGameOver.ForEach(i => i.SetActive(false));
+        objectToTurnOnOnGameOver.ForEach(i => i.SetActive(true));
     }
 
     public void AddPiece(Tetrimo newPiece)
