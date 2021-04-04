@@ -134,7 +134,7 @@ public class Tetrimo : MonoBehaviour
 
         if (rowsCleared > 0)
         {
-            if (GameState.Instance.CanFlip && UnityEngine.Random.value < GameState.Instance.Config.GetFlipProbability(rowsCleared))
+            if (GameState.Instance.CanFlip && UnityEngine.Random.value <= GameState.Instance.Config.GetFlipProbability(rowsCleared))
             {
                 PlayArea.FlipIt();
             }

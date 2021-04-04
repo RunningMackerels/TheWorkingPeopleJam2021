@@ -43,13 +43,25 @@ public class PauseMenu : MonoBehaviour
     private void Toggle()
     {
         _visible = !_visible;
+        if (_visible)
+        {
+            Time.timeScale = 0f;
+        }
+        else
+        {
+            Time.timeScale = 1f;
+        }
     }
     
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            OnButtonResume();
+            Toggle();
+            if (!_visible)
+            {
+                OnButtonResume();
+            }
         }
         _canvas.enabled = _visible;
     }

@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ae40ef878ace4121878c8e5a4a259f6, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: 
-  AutomaticSpawn: 0
-  TimeBetweenSpawns: 0.5
+  AutomaticSpawn: 1
   StartingDirection: -1
   TetrimoParts:
   - {fileID: 21300000, guid: ee7ab02bcee1441bbb67c7a932432768, type: 3}
@@ -29,7 +28,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 3959530fc4e7f48ccbb4d0bd5ebc2b67, type: 3}
   - {fileID: 21300000, guid: 742688ff299eb47f58fab26905134430, type: 3}
   PulseTiming: 0.5
-  Pulse: {x: 100, y: 90}
+  Pulse: {x: 90, y: 100}
   scoreWeights:
   - NumberOfLines: 1
     Score: 10
@@ -72,11 +71,12 @@ MonoBehaviour:
   - LowerLevel: 0
     Speed: 1.25
   flipProbabilities:
-  - NumberOfLines: 1
-    Probability: 0.1
-  - NumberOfLines: 2
-    Probability: 0.25
-  - NumberOfLines: 3
-    Probability: 0.5
   - NumberOfLines: 4
     Probability: 1
+  - NumberOfLines: 3
+    Probability: 0.5
+  - NumberOfLines: 2
+    Probability: 0.25
+  - NumberOfLines: 1
+    Probability: 0.1
+  PiecesInBetweenFlips: 1
