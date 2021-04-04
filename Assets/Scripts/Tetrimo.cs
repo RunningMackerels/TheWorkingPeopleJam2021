@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.XR;
 using UnityEngine;
-using UnityEngine.Networking;
 
 public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 {
@@ -229,6 +227,8 @@ public class Tetrimo : MonoBehaviour, IComparable<Tetrimo>
 
     private void SpriteItUp()
     {
+        return;
+
         foreach (TetrimoPart part in Parts)
         {
             bool top = false, bottom = false, left = false, right = false;
